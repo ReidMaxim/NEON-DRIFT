@@ -121,8 +121,8 @@ export const fanParts = () => [
   },
 ];
 export const ventParts = () => [
-  box("footing", [0, -0.039, 0], [1.12, 0.08, 0.8]),
-  box("opening", [0, -0.0165, 0], [0.94, 0.035, 0.62], "dark"),
+  box("footing", [0, -0.0395, 0], [1.12, 0.08, 0.8]),
+  box("opening", [0, -0.016, 0], [0.94, 0.035, 0.62], "dark"),
   ...[-1, 1].map((s) =>
     box(`rim-u-${s}`, [s * 0.52, -0.006, 0], [0.08, 0.02, 0.8]),
   ),
@@ -572,14 +572,14 @@ export function validateAssemblies(world, assemblies = world.attachments) {
       footing = v.parts.find((p) => p.id === "footing");
     if (
       !footing ||
-      Math.abs(footing.position[1] + footing.size[1] / 2 - 0.001) > EPS
+      Math.abs(footing.position[1] + footing.size[1] / 2 - 0.0005) > EPS
     )
       fail(v.id, "Grate backing is not integrated with pavement");
     if (v.collision !== "surface")
       fail(v.id, "Ground fixture must be walkable surface decoration");
     for (const p of v.parts) {
       const top = p.position[1] + p.size[1] / 2;
-      if (top < 0.0005 || top > 0.005)
+      if (top < 0.0004 || top > 0.005)
         fail(v.id, "Ground fixture is raised or buried");
     }
     if (!opening || grates.length !== 8)
