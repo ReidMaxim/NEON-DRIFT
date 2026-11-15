@@ -88,3 +88,5 @@ See [preview setup, branch selection, safeguards, limitations and verified evide
 - [Mission report and acceptance checklist](docs/MISSION_001_REPORT.md)
 - [Mission 002 roadmap](docs/MISSION_002_ROADMAP.md)
 - [Dependency and license notices](docs/DEPENDENCIES.md)
+
+Mission 003 attachment correction: [root cause, validation and close-up evidence](docs/ATTACHMENT_CORRECTION.md).

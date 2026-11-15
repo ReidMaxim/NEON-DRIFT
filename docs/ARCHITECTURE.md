@@ -51,3 +51,7 @@ Pinned dependencies and lockfile; static Vite output; relative repository base; 
 The Mission 002 core remains the compatibility reference. `district.js` creates tiered street/building descriptors; `city-scene.js` renders partitioned modular detail. Tier 0 preserves baseline geometry. `laboratory.js` is loaded only for development or experimental previews and measures separate frame, CPU and GPU timing channels. `world.js` movement optionally enforces the connected road-envelope union. Gameplay/network state remains independent in `scenario.js`.
 
 See [world generation](WORLD_GENERATION.md), [rendering optimization](RENDERING_OPTIMIZATION.md), [Mission 003 report](MISSION_003_REPORT.md) and [density benchmark](DENSITY_BENCHMARK.md). A visible preview revision and `/preview/build.json` identify the actual deployed version. Production is not replaced by this mission.
+
+## Attachment assemblies
+
+`assemblies.js` owns pure host-surface frames, explicit component recipes, grounded source origins and placement validation. `attachment-scene.js` applies those transforms to instanced fixed parts, local-axis rotors and source-relative GPU steam. `world.attachments` is generated independently of street topology and scenario state. See [root cause, constraints and evidence](ATTACHMENT_CORRECTION.md). Static-world batching requires explicit buffer updates if host motion is introduced later.

@@ -104,3 +104,7 @@ The road union grows from 1,050 m² to 3,460 m² at Tier 3 and 4,234 m² at Tier
 No fatal browser/console errors were captured in the matrix: 0. Performance observations apply to the recorded revision and settings, not all hardware.
 
 The release retained matrix covers runtime revision `24c61acd0216f3968de286cdb8bbbb1f1a2d268e`. The earlier pilot is kept only in ignored development artifacts and is not pooled into the tables. The normal browser cadence is not a GPU-capacity claim. Browser executable/acceptance version was Edge 157.0.4341.60; the raw benchmark records its full user-agent. A largest frame interval of 33.30 ms is visible in the tables even though it falls just below the explicit >33.34 ms counter threshold.
+
+## Context-aware fixture correction
+
+The original 48-case Mission 003 matrix above is historical evidence for the pre-correction renderer. The follow-up [attachment correction](ATTACHMENT_CORRECTION.md) records a matched before/after comparison for seeds 2049/8128 at all five tiers. Fans, steam, cables and lamp supports now have validated attachment data; do not treat the older matrix's resource counts as the corrected version's counts.

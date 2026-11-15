@@ -1,0 +1,95 @@
+{
+  "browser": "157.0.4341.60",
+  "cases": [
+    {
+      "seed": 2049,
+      "tier": 0,
+      "fans": 3,
+      "vents": 2,
+      "cables": 9,
+      "lamps": 6,
+      "errors": []
+    },
+    {
+      "seed": 2049,
+      "tier": 1,
+      "fans": 3,
+      "vents": 2,
+      "cables": 9,
+      "lamps": 6,
+      "errors": []
+    },
+    {
+      "seed": 2049,
+      "tier": 2,
+      "fans": 3,
+      "vents": 2,
+      "cables": 9,
+      "lamps": 6,
+      "errors": []
+    },
+    {
+      "seed": 2049,
+      "tier": 3,
+      "fans": 3,
+      "vents": 2,
+      "cables": 5,
+      "lamps": 6,
+      "errors": []
+    },
+    {
+      "seed": 2049,
+      "tier": 4,
+      "fans": 3,
+      "vents": 2,
+      "cables": 5,
+      "lamps": 6,
+      "errors": []
+    },
+    {
+      "seed": 8128,
+      "tier": 0,
+      "fans": 3,
+      "vents": 2,
+      "cables": 9,
+      "lamps": 6,
+      "errors": []
+    },
+    {
+      "seed": 8128,
+      "tier": 1,
+      "fans": 3,
+      "vents": 2,
+      "cables": 9,
+      "lamps": 6,
+      "errors": []
+    },
+    {
+      "seed": 8128,
+      "tier": 2,
+      "fans": 3,
+      "vents": 2,
+      "cables": 9,
+      "lamps": 6,
+      "errors": []
+    },
+    {
+      "seed": 8128,
+      "tier": 3,
+      "fans": 3,
+      "vents": 2,
+      "cables": 5,
+      "lamps": 6,
+      "errors": []
+    },
+    {
+      "seed": 8128,
+      "tier": 4,
+      "fans": 3,
+      "vents": 2,
+      "cables": 5,
+      "lamps": 6,
+      "errors": []
+    }
+  ]
+}
