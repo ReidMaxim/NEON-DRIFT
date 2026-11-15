@@ -149,7 +149,13 @@ export function expandDistrict(world) {
           vertical,
           identity:
             world.config.identity === "mixed"
-              ? seg.identity
+              ? seg.id === "cross"
+                ? x < -28
+                  ? "industrial"
+                  : x > 24
+                    ? "residential"
+                    : seg.identity
+                : seg.identity
               : world.config.identity,
           seed: Math.floor(r() * 1e9),
           variant: Math.floor(r() * 4),

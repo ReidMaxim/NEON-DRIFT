@@ -39,7 +39,7 @@ export function buildCity(scene, world) {
       vertexShader: `varying vec3 wp;void main(){wp=(modelMatrix*instanceMatrix*vec4(position,1.)).xyz;gl_Position=projectionMatrix*viewMatrix*vec4(wp,1.);}`,
       fragmentShader: `varying vec3 wp;uniform float time;float hash(vec2 p){return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453);}void main(){vec2 p=wp.xz;float noise=hash(floor(p*vec2(24.,48.)));float wet=.3+noise*.5;float ripple=.85+.15*sin(p.y*14.+sin(p.x*3.)+time*1.5);vec3 c=vec3(.028,.043,.06);float amber=exp(-pow((p.x+39.)*.22,2.))*exp(-abs(p.y+37.)*.035);float violet=exp(-pow((p.x-31.)*.3,2.))*exp(-abs(p.y+34.)*.04);float green=exp(-pow((p.y+57.)*.4,2.));float pink=exp(-pow((p.y+28.)*.35,2.));c+=(amber*vec3(.28,.13,.025)+violet*vec3(.08,.08,.25)+green*vec3(.055,.12,.07)+pink*vec3(.16,.025,.1))*wet*ripple;float f=1.-exp(-pow(length(cameraPosition-wp)*.025,2.));gl_FragColor=vec4(mix(c,vec3(.025,.038,.075),f),1.);}`,
     }),
-    wear = surface("#253039"),
+    wear = surface("#58615f"),
     rust = surface("#4b3d32"),
     trash = surface("#121e23"),
     paper = surface("#868375");
@@ -168,6 +168,80 @@ export function buildCity(scene, world) {
         ry,
       );
     }
+    if (!core) {
+      // Secondary faces use layered bands and inset windows rather than blank extrusion sides.
+      const crossWidth = vertical ? b.w : b.d;
+      for (const edge of [-1, 1]) {
+        const edgeX = b.x + (vertical ? 0 : (edge * b.w) / 2),
+          edgeZ = b.z + (vertical ? (edge * b.d) / 2 : 0);
+        for (let y = 2; y < b.h; y += 3.5) {
+          add(
+            edgeX,
+            y,
+            edgeZ,
+            vertical ? b.w : 0.12,
+            0.12,
+            vertical ? 0.12 : b.d,
+            m.trim,
+          );
+          for (
+            let u = -crossWidth / 2 + 0.8;
+            u < crossWidth / 2 - 0.5;
+            u += 1.7
+          ) {
+            const px = edgeX + (vertical ? u : edge * 0.07),
+              pz = edgeZ + (vertical ? edge * 0.07 : u);
+            add(
+              px,
+              y + 1,
+              pz,
+              vertical ? 0.65 : 0.1,
+              1,
+              vertical ? 0.1 : 0.65,
+              r() > 0.58 ? m.glass : m.dark,
+              cube,
+              true,
+            );
+          }
+        }
+        add(
+          edgeX + (vertical ? 0 : edge * 0.15),
+          2,
+          edgeZ + (vertical ? edge * 0.15 : 0),
+          vertical ? 1.3 : 0.2,
+          3.5,
+          vertical ? 0.2 : 1.3,
+          m.trim,
+        );
+      }
+      if (id === "residential") {
+        put(0, 1.5, 0.22, 2, 2.6, 0.12, m.trim);
+        put(0, 1.4, 0.32, 1.5, 2.2, 0.12, m.dark);
+        for (let i = 0; i < 3; i++)
+          put(-1 + i, 2.2, 0.45, 0.45, 0.6, 0.35, i % 2 ? m.trim : rust, true);
+        for (let y = 5; y < b.h - 2; y += 5) {
+          for (let i = 0; i < 3; i++)
+            put(-1 + i, y + 0.3, 1.3, 0.4, 0.4, 0.35, trash, true);
+        }
+      }
+      if (id === "abandoned") {
+        for (let u = -width * 0.4; u < width * 0.5; u += 1.1) {
+          put(u, 2, 0.35, 0.9, 0.18, 0.18, rust);
+          put(u, 2.8, 0.36, 0.9, 0.18, 0.18, m.trim);
+        }
+        for (let i = 0; i < 6; i++)
+          put(
+            (r() - 0.5) * width,
+            0.2 + r() * 2,
+            0.5,
+            0.08,
+            1.2,
+            0.15,
+            rust,
+            true,
+          );
+      }
+    }
     // Building grammar: depth ribs, meters, service doors, boxed AC, drain runs and abstract paint.
     for (let u = -width / 2 + 0.3; u < width / 2; u += 2.3) {
       put(u, 2.2, 0.22, 0.12, 4.4, 0.26, m.trim, true);
@@ -292,6 +366,9 @@ export function buildCity(scene, world) {
       );
     add(-39, 8, -42, 15, 0.5, 3, m.trim);
     add(-39, 9, -40.5, 15, 0.1, 0.1, m.neon);
+    add(-38, 20, -39, 19, 0.7, 2.4, m.trim);
+    add(-38, 20.6, -37.8, 19, 0.08, 0.08, m.neon);
+    add(-24, 18, -43, 2, 1, 7, m.trim);
     // Clearly closed maintenance gantries: no implied playable stairs.
     for (const b of world.city.buildings
       .filter((b) => b.identity === "industrial")
@@ -338,17 +415,10 @@ export function buildCity(scene, world) {
       const x = seg.minX + rand() * (seg.maxX - seg.minX),
         z = seg.minZ + rand() * (seg.maxZ - seg.minZ);
       if (Math.abs(x) < 2 && z > 0) continue;
-      add(
-        x,
-        0.032,
-        z,
-        0.3 + rand(),
-        0.02,
-        0.5 + rand() * 1.6,
-        wear,
-        cube,
-        true,
-      );
+      const rw = 0.3 + rand(),
+        rd = 0.5 + rand() * 1.6;
+      add(x, 0.03, z, rw + 0.08, 0.016, rd + 0.08, rust, cube, true);
+      add(x, 0.045, z, rw, 0.012, rd, wear, cube, true);
     }
   if (tier >= 2) {
     const particleGeo = new T.BufferGeometry(),
