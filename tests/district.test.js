@@ -146,3 +146,30 @@ test("invalid tiers and district identifiers fail clearly", () => {
   for (const tier of [-1, 5, 1.5, NaN]) assert.throws(() => generate({ tier }));
   assert.throws(() => generate({ identity: "unknown" }));
 });
+
+test("supported width and density extremes retain the connected loop", () => {
+  for (const seed of [0, 42, 2049, 8128])
+    for (const tier of [3, 4])
+      for (const streetWidth of [8, 12, 20])
+        for (const density of [0.4, 1, 2]) {
+          const w = generate({ seed, tier, streetWidth, density }),
+            boxes = [...colliders(w), ...scenarioColliders(scenarioLayout(w))],
+            p = { x: 0, z: 13 };
+          for (const [x, z] of [
+            [0, -28],
+            [-39, -28],
+            [-39, -57],
+            [31, -57],
+            [31, -28],
+            [0, -28],
+            [0, 13],
+          ]) {
+            movePlayer(p, x - p.x, 0, boxes, w.bounds, w.walkable);
+            movePlayer(p, 0, z - p.z, boxes, w.bounds, w.walkable);
+            assert.ok(
+              Math.hypot(p.x - x, p.z - z) < 0.3,
+              JSON.stringify({ seed, tier, streetWidth, density, x, z, p }),
+            );
+          }
+        }
+});

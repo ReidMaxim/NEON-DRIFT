@@ -11,7 +11,9 @@
     "test:browser": "node scripts/playtest.mjs",
     "format": "prettier --write src tests scripts docs README.md index.html vite.config.js .github",
     "format:check": "prettier --check src tests scripts docs README.md index.html vite.config.js .github",
-    "test:production": "node scripts/production-test.mjs"
+    "test:production": "node scripts/production-test.mjs",
+    "benchmark:density": "node scripts/density-benchmark.mjs",
+    "test:mission003": "node scripts/acceptance-m3.mjs"
   },
   "dependencies": {
     "three": "0.180.0"

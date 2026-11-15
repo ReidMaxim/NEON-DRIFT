@@ -93,6 +93,11 @@ export function createLaboratory({
       note: "CPU attribute storage and RGBA8 texture approximation; excludes render targets, driver allocation, program memory. Not total VRAM.",
     };
   }
+  function countSummary(a) {
+    const s = summary(a);
+    if (s) delete s.spikesOver33ms;
+    return s;
+  }
   function report() {
     const debug = gl.getExtension("WEBGL_debug_renderer_info");
     return {
@@ -116,8 +121,8 @@ export function createLaboratory({
       cpuRenderSubmissionMs: summary(cpuRender.subarray(0, n)),
       gpuElapsedMs: summary(gpu),
       gpuTimerSupported: !!ext,
-      drawCalls: summary(draws.subarray(0, n)),
-      triangles: summary(triangles.subarray(0, n)),
+      drawCalls: countSummary(draws.subarray(0, n)),
+      triangles: countSummary(triangles.subarray(0, n)),
       resources: resources(),
       heap: performance.memory
         ? {

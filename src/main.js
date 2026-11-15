@@ -201,11 +201,17 @@ async function start() {
   $("volume").oninput = () => audio.setVolume(Number($("volume").value) / 100);
   addEventListener("keydown", (e) => {
     if (
-      ["terminal", "inspect", "journal"].includes(state) &&
+      ["terminal", "inspect", "journal", "lab"].includes(state) &&
       e.code === "Tab"
     ) {
-      const panel = $(state === "inspect" ? "inspector" : state);
-      const items = panel.querySelectorAll("button,input");
+      const panel = $(
+        state === "inspect"
+          ? "inspector"
+          : state === "lab"
+            ? "laboratory"
+            : state,
+      );
+      const items = panel.querySelectorAll("button,input,select,summary");
       const first = items[0],
         last = items[items.length - 1];
       if (e.shiftKey && document.activeElement === first) {

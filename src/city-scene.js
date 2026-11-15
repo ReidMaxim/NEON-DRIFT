@@ -77,8 +77,9 @@ export function buildCity(scene, world) {
     stats.instances++;
   }
   const tags = {};
-  function signMaterial(id) {
-    if (tags[id]) return tags[id];
+  function signMaterial(id, customText = null) {
+    const key = id + ":" + (customText || "");
+    if (tags[key]) return tags[key];
     const c = document.createElement("canvas");
     c.width = 512;
     c.height = 128;
@@ -93,18 +94,19 @@ export function buildCity(scene, world) {
     g.font = "bold 52px monospace";
     g.textAlign = "center";
     g.fillText(
-      {
-        commercial: "NIGHT / MARKET",
-        industrial: "KILN / SERVICE",
-        residential: "HABITAT / 09",
-        abandoned: "SIGNAL / LOST",
-      }[id],
+      customText ||
+        {
+          commercial: "NIGHT / MARKET",
+          industrial: "KILN / SERVICE",
+          residential: "HABITAT / 09",
+          abandoned: "SIGNAL / LOST",
+        }[id],
       256,
       82,
     );
     const texture = new T.CanvasTexture(c);
     texture.colorSpace = T.SRGBColorSpace;
-    return (tags[id] = new T.MeshBasicMaterial({
+    return (tags[key] = new T.MeshBasicMaterial({
       map: texture,
       side: T.DoubleSide,
     }));
@@ -368,7 +370,28 @@ export function buildCity(scene, world) {
     add(-39, 9, -40.5, 15, 0.1, 0.1, m.neon);
     add(-38, 20, -39, 19, 0.7, 2.4, m.trim);
     add(-38, 20.6, -37.8, 19, 0.08, 0.08, m.neon);
-    add(-24, 18, -43, 2, 1, 7, m.trim);
+    for (const x of [-47.2, -28.8]) add(x, 10, -39, 0.6, 20, 0.7, m.trim);
+    for (const x of [-46.1, -31.9]) add(x, 4, -42, 0.5, 8, 0.6, m.trim);
+    add(
+      9,
+      2.8,
+      -51,
+      3.5,
+      0.8,
+      1,
+      signMaterial("residential", "HABITAT →"),
+      signGeo,
+    );
+    add(
+      -9,
+      2.8,
+      -22,
+      3.5,
+      0.8,
+      1,
+      signMaterial("industrial", "← KILN"),
+      signGeo,
+    );
     // Clearly closed maintenance gantries: no implied playable stairs.
     for (const b of world.city.buildings
       .filter((b) => b.identity === "industrial")

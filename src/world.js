@@ -25,7 +25,7 @@ export function generate(config = {}) {
     !Number.isInteger(c.tier) ||
     c.tier < 0 ||
     c.tier > 4 ||
-    !(c.identity === "mixed" || c.identity in identities)
+    !(c.identity === "mixed" || Object.hasOwn(identities, c.identity))
   )
     throw new Error("Invalid complexity tier or district identity");
   for (const k of [

@@ -1,3 +1,14 @@
+import { execFileSync } from "node:child_process";
+const baseline = "7fbc31cae1225d5a15131ac4021e6db502f35a12";
+if (
+  execFileSync("git", ["rev-parse", "HEAD"], { encoding: "utf8" }).trim() !==
+  baseline
+)
+  throw new Error(
+    "This pre-change baseline capture must run in a worktree at " +
+      baseline +
+      ". Use density-benchmark.mjs for Tier 0 comparisons on current code.",
+  );
 import { chromium } from "@playwright/test";
 import { writeFile, mkdir, readdir, stat } from "node:fs/promises";
 import { generate, colliders } from "../src/world.js";
