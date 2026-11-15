@@ -90,3 +90,5 @@ See [preview setup, branch selection, safeguards, limitations and verified evide
 - [Dependency and license notices](docs/DEPENDENCIES.md)
 
 Mission 003 attachment correction: [root cause, validation and close-up evidence](docs/ATTACHMENT_CORRECTION.md).
+
+[Flush, traversable ground fixtures](docs/SURFACE_FIXTURES.md): Mission 003 surface integration follow-up.

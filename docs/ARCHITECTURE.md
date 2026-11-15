@@ -55,3 +55,5 @@ See [world generation](WORLD_GENERATION.md), [rendering optimization](RENDERING_
 ## Attachment assemblies
 
 `assemblies.js` owns pure host-surface frames, explicit component recipes, grounded source origins and placement validation. `attachment-scene.js` applies those transforms to instanced fixed parts, local-axis rotors and source-relative GPU steam. `world.attachments` is generated independently of street topology and scenario state. See [root cause, constraints and evidence](ATTACHMENT_CORRECTION.md). Static-world batching requires explicit buffer updates if host motion is introduced later.
+
+Surface fixtures carry explicit surface collision classification, use supporting pavement height, and never enter the solid assembly collider list. Repair patches are generated in world.surfaceDecorations. See [surface fixture correction](SURFACE_FIXTURES.md).

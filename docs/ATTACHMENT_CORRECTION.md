@@ -85,3 +85,7 @@ All corrected runs averaged about 16.667 ms, with no frames over 33 ms; the larg
 Raw measurements: [before](attachment-correction/before-performance.json), [after](attachment-correction/after-performance.json).
 
 [Gameplay acceptance](attachment-correction/gameplay-acceptance.json) passed both relay solutions, clue/reward and completion persistence, expanded-loop keyboard traversal, journal, audio controls, all quality presets, regeneration and narrow touch fallback. Production-mode browser checks passed base-path hard refresh, missing-asset/external-request checks, absent development hooks, context-loss messaging and unsupported-WebGL2 messaging. Browser audio controls were exercised; subjective audio quality remains a human check.
+
+## Follow-up
+
+The raised footing and solid grate collision described in this historical report were superseded by the [flush, walkable surface fixture correction](SURFACE_FIXTURES.md).
