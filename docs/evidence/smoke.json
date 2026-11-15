@@ -1,0 +1,35 @@
+{
+  "errors": [],
+  "checks": [
+    "Pointer lock acquired",
+    "WASD movement and nearby E interaction",
+    "Terminal directory, typed about, unknown command, exit",
+    "Quality presets and restart",
+    "Synthetic mouse-look handler; Escape menu",
+    "50-second scripted tour",
+    "1080p resize",
+    "Mobile explanatory fallback"
+  ],
+  "browser": "157.0.4341.46",
+  "benchmark": {
+    "browser": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/157.0.0.0 Safari/537.36 Edg/157.0.0.0",
+    "gpu": "ANGLE (NVIDIA, NVIDIA GeForce GTX 1050 Ti (0x00001C8C) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+    "viewport": [
+      1440,
+      900
+    ],
+    "drawingBuffer": [
+      1224,
+      765
+    ],
+    "quality": "medium",
+    "seed": 2049,
+    "frames": 2821,
+    "meanMs": 16.66667860410434,
+    "p99Ms": 17.100000381469727,
+    "maxMs": 17.700000762939453,
+    "metric": "requestAnimationFrame interval; not GPU timestamp",
+    "drawCalls": 112,
+    "triangles": 32906
+  }
+}
