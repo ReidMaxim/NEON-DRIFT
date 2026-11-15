@@ -1,3 +1,7 @@
+import { execFileSync } from "node:child_process";
+const expectedRevision = execFileSync("git", ["rev-parse", "HEAD"], {
+  encoding: "utf8",
+}).trim();
 import { chromium } from "@playwright/test";
 import { mkdir, writeFile, readFile, stat, readdir } from "node:fs/promises";
 import { gzipSync } from "node:zlib";
@@ -47,6 +51,8 @@ try {
     if (process.env.RESUME === "true") {
       try {
         const r = JSON.parse(await readFile(file));
+        if (r.revision !== expectedRevision)
+          throw new Error("Old revision requires rerun");
         results.push(r);
         console.log("retained", key);
         continue;

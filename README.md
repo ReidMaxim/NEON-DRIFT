@@ -1,8 +1,16 @@
 # NEON–DRIFT
 
-A signal in the rain. An original, procedural cyberpunk district for the browser.
+A signal in the rain. An original, procedural cyberpunk city for the browser.
 
 Mission 001 builds one bounded alley: layered towers, abandoned storefronts, suspended cables, rain, broken neon, wet asphalt, and a working municipal CRT relay. Geometry and sign textures are generated locally. No downloaded art, accounts, API keys, or runtime services.
+
+## Mission 003 — World Laboratory
+
+[Play the experimental city](https://reidmaxim.github.io/NEON-DRIFT/preview/) and use **World Lab**. Complexity tiers 0–4 control geometry; Low/Medium/High controls rendering cost independently. Controls & graphics exposes seed, district identity, quality and regeneration. Tier 0 preserves the Mission 002 environment. Tier 3 opens a connected industrial/commercial/residential/abandoned district; Tier 4 is the maximum-density experiment.
+
+Example configuration: `?seed=8128&tier=3&identity=mixed&quality=medium`. **L** opens the lab in the preview; WASD, mouse look, Shift, E, J and Escape preserve exploration and the Dead Relay scenario. The experimental banner and Lab show the revision. Production remains the stable Mission 001 game.
+
+Read the [Mission 003 report](docs/MISSION_003_REPORT.md), [benchmark evidence](docs/DENSITY_BENCHMARK.md), [visual comparisons](docs/VISUAL_COMPARISON.md), [generation rules](docs/WORLD_GENERATION.md), and [rendering analysis](docs/RENDERING_OPTIMIZATION.md).
 
 ## Run locally
 
@@ -21,7 +29,7 @@ npm run build
 npm run preview
 ```
 
-The production site is the `dist/` directory. It is approximately 0.53 MB uncompressed, including the renderer; see the mission report for measured build output. No network dependencies are loaded at runtime.
+The production site is the `dist/` directory. It is approximately 0.58 MB uncompressed, including the renderer; see the mission report for measured build output. No network dependencies are loaded at runtime.
 
 ## Controls
 
@@ -42,17 +50,21 @@ The terminal accepts `status`, `directory`, `about`, and `exit`, both through bu
 
 ## Development diagnostics
 
-Only the development build exposes `window.neonDev`. Keys **1–6** select the six fixed viewpoints. **B** starts a 50-second interpolated tour; its final frame statistics are printed to the console. `neonDev.report()` returns browser, GPU string when exposed, viewport, drawing-buffer size, seed, quality, and mean/p99/max requestAnimationFrame intervals. These are not GPU timestamps. The tour does not claim to be a collision traversal.
+World Lab is available in development and experimental preview builds. Its comparison tour follows the original six viewpoints; the district tour visits the connected neighborhoods. Reports separate requestAnimationFrame cadence, CPU update, render submission and asynchronous GPU elapsed queries where supported. Run a tour from the Lab and inspect the report afterward. Camera tours do not prove collision routing; keyboard traversal is tested separately.
 
-Automated screenshots and interaction tests require Microsoft Edge installed:
+To reproduce the static benchmark:
 
 ```sh
-# Keep npm run dev running in another terminal.
-# Set TEST_URL to the printed Vite URL if it differs.
-npm run test:browser
+# Build with VITE_PREVIEW=true in your shell's environment.
+npm run build -- --base=/NEON-DRIFT/preview/
+npm run preview -- --base=/NEON-DRIFT/preview/ --port 5183 --strictPort
+# In another terminal:
+node scripts/density-benchmark.mjs
 ```
 
-The script's default test URL is `http://127.0.0.1:5173/NEON-DRIFT/`. Set `BROWSER_CHANNEL=chrome` for installed Chrome. Results go to ignored `artifacts/`. Run `npm run build && npm run test:production` to check the built base path, offline dependencies, and graphics failure messages. Native mouse look and subjective motion quality still require a human pass. Formatting: `npm run format` / `npm run format:check`.
+The matrix runs serially on installed Microsoft Edge and writes ignored results under `artifacts/mission003/`. Set TEST_URL to override the server, BENCH_SECONDS to extend the common duration, or RESUME=true to retain completed case files. Native mouse look and subjective motion quality remain human acceptance checks. Existing `npm run test:browser` covers the earlier interaction loop; `node scripts/acceptance-m3.mjs` covers both puzzle methods and connected traversal. Run browser tests separately from benchmarks to avoid GPU contention.
+
+Formatting: `npm run format` / `npm run format:check`. `npm run test:production` validates production-build base-path and error handling; run it after a normal production build, not a preview build.
 
 ## Browser playtesting and GitHub Pages
 
@@ -66,6 +78,11 @@ See [preview setup, branch selection, safeguards, limitations and verified evide
 
 ## Documentation
 
+- [Mission 003 report](docs/MISSION_003_REPORT.md)
+- [Density benchmark](docs/DENSITY_BENCHMARK.md)
+- [World generation](docs/WORLD_GENERATION.md)
+- [Visual comparison](docs/VISUAL_COMPARISON.md)
+- [Mission 004 roadmap](docs/MISSION_004_ROADMAP.md)
 - [Architecture](docs/ARCHITECTURE.md)
 - [Reference research](docs/REFERENCE_RESEARCH.md)
 - [Mission report and acceptance checklist](docs/MISSION_001_REPORT.md)

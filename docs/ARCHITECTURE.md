@@ -45,3 +45,9 @@ Unavailable WebGL2 and initialization errors get a visible explanation. Context 
 ## Deployment and constraints
 
 Pinned dependencies and lockfile; static Vite output; relative repository base; no runtime CDNs or external APIs. CI tests/builds PRs. Pages deployment is workflow-dispatch only on main, maintaining a separate publication decision after review. The empty repository requires one empty baseline commit on main for a meaningful feature PR; no app content or workflow is placed on main before review.
+
+## Mission 003 extensions
+
+The Mission 002 core remains the compatibility reference. `district.js` creates tiered street/building descriptors; `city-scene.js` renders partitioned modular detail. Tier 0 preserves baseline geometry. `laboratory.js` is loaded only for development or experimental previews and measures separate frame, CPU and GPU timing channels. `world.js` movement optionally enforces the connected road-envelope union. Gameplay/network state remains independent in `scenario.js`.
+
+See [world generation](WORLD_GENERATION.md), [rendering optimization](RENDERING_OPTIMIZATION.md), [Mission 003 report](MISSION_003_REPORT.md) and [density benchmark](DENSITY_BENCHMARK.md). A visible preview revision and `/preview/build.json` identify the actual deployed version. Production is not replaced by this mission.

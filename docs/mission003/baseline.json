@@ -1,0 +1,50 @@
+{
+  "commit": "7fbc31cae1225d5a15131ac4021e6db502f35a12",
+  "bounds": {
+    "minX": -5.65,
+    "maxX": 5.65,
+    "minZ": -69,
+    "maxZ": 18
+  },
+  "walkableAreaGridEstimateM2": 969.9375,
+  "buildings": 20,
+  "generatedProps": 22,
+  "modules": [
+    "box facade",
+    "windows/trim",
+    "pipe sweep",
+    "vents",
+    "balconies",
+    "signs",
+    "streetlights",
+    "utility clutter",
+    "CRT",
+    "archive alcove"
+  ],
+  "timing": {
+    "browser": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/157.0.0.0 Safari/537.36 Edg/157.0.0.0",
+    "gpu": "ANGLE (NVIDIA, NVIDIA GeForce GTX 1050 Ti (0x00001C8C) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+    "viewport": [
+      1920,
+      1080
+    ],
+    "drawingBuffer": [
+      1920,
+      1080
+    ],
+    "quality": "high",
+    "seed": 2049,
+    "frames": 2821,
+    "meanMs": 16.666714046576985,
+    "p99Ms": 17.100000381469727,
+    "maxMs": 18.600000381469727,
+    "metric": "requestAnimationFrame interval; not GPU timestamp",
+    "drawCalls": 159,
+    "triangles": 36078
+  },
+  "heap": {
+    "used": 14330468,
+    "total": 21860308
+  },
+  "errors": []
+}

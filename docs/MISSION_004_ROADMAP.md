@@ -1,0 +1,10 @@
+# Mission 004 recommendations
+
+1. **Spend detail on recognizable places.** Tier 1 offers a strong visible return; Tier 4 exposes repetition. Create a small catalog of distinctive service entrances, domestic fronts, damaged shutters and roof profiles before increasing raw counts.
+2. **Strengthen district identity.** Retain the kiln as an industrial anchor. Give residential and abandoned routes their own recognizable silhouettes and material wear, rather than relying on shared signs and tint. Keep the original entrance's legibility.
+3. **Improve measured submission cost.** Spatial batches increase visibility control but also draw calls. Investigate merging compatible material families/texture atlases and reducing tiny detail batches. Use the matrix's CPU submission and GPU queries to select targets; synchronized frame cadence alone is insufficient.
+4. **Make bounded navigation more expressive.** Add one authored courtyard and a clear destination on the lower connector. Maintain a tested connected road union, collision clearance and scenario reservations. Add accessible vertical routes only with explicit ground-height/collision support and safe boundaries.
+5. **Broaden evidence.** Repeat the matrix on an integrated GPU and a second browser engine, at fixed pixel sizes. Record longer visible-browser runs and motion captures. Determine whether effects, submission or geometry become limiting on those machines before changing engines.
+6. **Restore gameplay emphasis after the graphics experiment.** Finish the inherited Mission 002 acceptance/documentation dependency, then use the connected neighborhoods for existing infrastructure interactions. Add no combat, NPC simulation or inventory complexity until the current puzzle loop is accepted.
+
+The current experiment does not establish a universal maximum city size or GPU ceiling. It establishes a reproducible finite test bed and identifies modular repetition and submission growth as visible costs worth addressing before larger expansion.
