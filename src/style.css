@@ -409,3 +409,80 @@ body:has(#journal:not([hidden]))::after {
     max-height: 28vh;
   }
 }
+#lab-button {
+  pointer-events: auto;
+  margin-left: auto;
+}
+#menu-button {
+  margin-left: 0;
+}
+.laboratory {
+  width: min(760px, 92vw);
+  color: #b7e8dc;
+}
+.laboratory p {
+  font-size: 12px;
+}
+#lab-views {
+  gap: 5px;
+  margin-top: 15px;
+}
+#lab-views button {
+  font-size: 10px;
+  padding: 8px;
+}
+#lab-report {
+  font-size: 10px;
+  max-height: 30vh;
+  overflow: auto;
+}
+#performance {
+  position: fixed;
+  top: 115px;
+  right: 25px;
+  padding: 10px;
+  background: #07101fe0;
+  color: #a1ffe4;
+  font: 11px monospace;
+  pointer-events: none;
+}
+body:has(#laboratory:not([hidden]))::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background: #020811bb;
+  z-index: 1;
+}
+#lab-settings {
+  margin: 14px 0;
+  padding-top: 8px;
+  border-top: 1px solid #496563;
+}
+.panel {
+  top: 19%;
+  max-height: 75vh;
+}
+@media (max-width: 650px) {
+  #lab-button {
+    font-size: 8px;
+    padding: 8px;
+  }
+  #menu-button {
+    font-size: 8px;
+    padding: 8px;
+  }
+  header > div {
+    display: none;
+  }
+  #performance {
+    top: 90px;
+    left: 18px;
+    font-size: 9px;
+  }
+  .laboratory {
+    padding: 18px;
+  }
+  .laboratory h2 {
+    font-size: 19px;
+  }
+}

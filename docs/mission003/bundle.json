@@ -1,0 +1,5 @@
+{
+  "uncompressed": 585456,
+  "gzipped": 158256,
+  "includes": "All static output files, gzip per file; HTTP transfer depends on hosting compression"
+}

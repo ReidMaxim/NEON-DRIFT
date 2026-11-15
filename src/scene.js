@@ -1,5 +1,6 @@
 import { grimeTexture } from "./living.js";
 import { scenarioLayout, inReservedArea } from "./scenario.js";
+import { intersects } from "./district.js";
 import * as T from "three";
 import { random } from "./world.js";
 export function buildScene(scene, world) {
@@ -115,16 +116,22 @@ export function buildScene(scene, world) {
     }
     box(face - side * 0.13, 1.2, b.z, 0.22, 2.4, 1.3, dark);
     box(face - side * 0.3, 2.8, b.z, 0.7, 0.15, 2.6, metal);
+    const pipeFar = Math.min(2, b.d / 2 - 0.25),
+      pipeNear = Math.min(1, b.d / 2 - 0.25);
     tube(
       [
-        [face - side * 0.24, 0.2, b.z + 2],
-        [face - side * 0.24, 4, b.z + 2],
-        [face - side * 0.24, 4.4, b.z + 1],
-        [face - side * 0.24, b.h, b.z + 1],
+        [face - side * 0.24, 0.2, b.z + pipeFar],
+        [face - side * 0.24, 4, b.z + pipeFar],
+        [face - side * 0.24, 4.4, b.z + pipeNear],
+        [face - side * 0.24, b.h, b.z + pipeNear],
       ],
       0.09,
       metal,
     );
+    for (let y = 1; y < b.h; y += 3.5) {
+      box(face - side * 0.12, y, b.z + pipeFar, 0.26, 0.09, 0.24, metal);
+      box(face - side * 0.12, y, b.z + pipeNear, 0.26, 0.09, 0.24, metal);
+    }
     if (r() > 0.5) {
       box(face - side * 0.7, 7.2, b.z, 1.5, 0.22, 3.5, metal);
       box(face - side * 1.35, 7.7, b.z, 0.09, 1, 3.5, dark);
@@ -132,6 +139,8 @@ export function buildScene(scene, world) {
         box(face - side * 1.35, 7.7, b.z - 1.5 + j * 0.6, 0.1, 1, 0.06, metal);
     }
     if (r() > 0.5) {
+      for (const y of [4.0, 4.6])
+        box(face - side * 0.12, y, b.z - 1, 0.26, 0.12, 1.1, metal);
       box(face - side * 0.7, 4.3, b.z - 1, 1.1, 0.7, 1.5, mats[1]);
       tube(
         [
@@ -143,16 +152,25 @@ export function buildScene(scene, world) {
         metal,
       );
     }
+    const ventZ = b.z - Math.min(1.8, Math.max(0, b.d / 2 - 0.65));
+    box(face - side * 0.08, 4.05, ventZ, 0.16, 0.78, 1.2, metal);
     const vent = new T.Group();
     for (let i = 0; i < 5; i++) {
       const m = new T.Mesh(geo, metal);
-      m.position.set(face - side * 0.35, 3.8 + i * 0.12, b.z - 1.8);
+      m.position.set(
+        face - side * 0.35,
+        3.8 + i * 0.12,
+        b.z - Math.min(1.8, Math.max(0, b.d / 2 - 0.65)),
+      );
       m.scale.set(0.4, 0.06, 1.1);
       vent.add(m);
     }
     scene.add(vent);
     details.push(vent);
     if (r() > 0.35) {
+      box(face - side * 0.04, 5.5, b.z, 0.08, 2.7, 0.16, metal);
+      for (const y of [4.3, 6.7])
+        box(face - side * 0.45, y, b.z, 0.9, 0.09, 0.16, metal);
       box(face - side * 0.8, 5.5, b.z, 1.4, 2.9, 0.25, dark);
       box(face - side * 1.4, 5.5, b.z, 0.06, 2.6, 0.28, neon[side < 0 ? 1 : 0]);
       sign(
@@ -186,20 +204,20 @@ export function buildScene(scene, world) {
     for (let x = -half; x < half; x += 1.1)
       box(x, 10, z + 1.23, 0.6, 0.75, 0.05, neon[0]);
   }
-  for (let j = 0; j < 9; j++) {
-    let z = 12 - j * 9;
-    tube(
-      [
-        [-half, 8 + (j % 3), z],
-        [0, 6 + (j % 3), z - 1],
-        [half, 9, z - 2],
-      ],
-      0.027,
-      dark,
-    );
-  }
   for (const z of [7, -8, -27, -49]) {
     for (let j = 0; j < 4; j++) {
+      if (
+        world.config.tier >= 3 &&
+        world.city.roads
+          .slice(1)
+          .some((r) =>
+            intersects(
+              { minX: -half + 0.15, maxX: -half + 2, minZ: z - 1, maxZ: z + 3 },
+              r,
+            ),
+          )
+      )
+        continue;
       if (inReservedArea(layout, -half + 0.45 + j * 0.3, z + j * 0.4)) continue;
       box(
         -half + 0.45 + j * 0.3,
@@ -216,11 +234,6 @@ export function buildScene(scene, world) {
     box(p.x, p.h / 2 + 0.1, p.z, p.w, p.h, 0.8, metal);
     box(p.x, p.h + 0.12, p.z, p.w + 0.06, 0.08, 0.86, dark);
   }
-  for (const side of [-1, 1])
-    for (const z of [9, -20, -50]) {
-      box(side * (half - 1), 2.8, z, 0.1, 5.6, 0.1, metal);
-      box(side * (half - 1.6), 5.6, z, 1.3, 0.12, 0.25, neon[2]);
-    }
   // Hero storefront and municipal terminal, readable from the opening camera.
   sign("AFTER HOURS", -half + 0.12, 3.4, -4, 5.6, 1.15, "#ff69d2", Math.PI / 2);
   box(-half + 0.28, 2.1, -4, 0.5, 0.18, 6, neon[1]);
@@ -252,7 +265,9 @@ export function buildScene(scene, world) {
     [half - 1, 4, -16, 0x21bfff, 65],
     [-half + 1, 4, -33, 0xf199ff, 65],
     [1, 6, -57, 0x34caff, 130],
-    [half - 1, 5, 9, 0xffbd7c, 35],
+    ...world.attachments.lamps
+      .filter((l) => l.faulty)
+      .map((l) => [l.position[0], 5, l.position[2], 0xffbd7c, 35]),
   ];
   for (const [x, y, z, c, p] of lights) {
     const light = new T.PointLight(c, p, 19, 2);
@@ -304,7 +319,14 @@ export function buildScene(scene, world) {
     const x = (rr() - 0.5) * world.config.streetWidth,
       y = rr() * 18,
       z = 18 - rr() * 90;
-    positions.set([x, y, z, x + 0.035, y, z], i * 6);
+    if (world.config.tier >= 3) {
+      const seg = world.city.roads[i % world.city.roads.length],
+        px = seg.minX + rr() * (seg.maxX - seg.minX),
+        pz = seg.minZ + rr() * (seg.maxZ - seg.minZ);
+      positions.set([px, y, pz, px + 0.035, y, pz], i * 6);
+    } else {
+      positions.set([x, y, z, x + 0.035, y, z], i * 6);
+    }
   }
   const rainGeo = new T.BufferGeometry();
   rainGeo.setAttribute("position", new T.BufferAttribute(positions, 3));

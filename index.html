@@ -15,7 +15,8 @@
     <header>
       <a class="brand" href="./">N<span>／</span>D</a>
       <div>NEON–DRIFT<small>DISTRICT 07 · AFTER HOURS</small></div>
-      <button id="menu-button" aria-label="Open menu">
+      <button id="lab-button" hidden>WORLD LAB</button
+      ><button id="menu-button" aria-label="Open menu">
         MENU <span>≡</span>
       </button>
     </header>
@@ -30,7 +31,7 @@
       ><span id="hint">WASD MOVE · MOUSE LOOK · E INTERACT · J JOURNAL</span>
     </footer>
     <section id="menu" class="panel" aria-label="Exploration menu">
-      <div class="eyebrow">MISSION 002 / THE DEAD RELAY</div>
+      <div class="eyebrow">MISSION 003 / DENSITY LAB</div>
       <h1>NEON<br /><em>DRIFT.</em></h1>
       <p>The city went quiet.<br />Something is still transmitting.</p>
       <button id="enter" class="primary">ENTER DISTRICT <span>↗</span></button>
@@ -45,9 +46,28 @@
             <option value="high">High</option>
           </select></label
         ><label
-          >World seed
-          <input id="seed" type="number" value="2049" step="1" /></label
-        ><button id="regenerate">Generate district</button
+          >World seed <input id="seed" type="number" value="2049" step="1"
+        /></label>
+        <div id="lab-settings">
+          <label
+            >World complexity (geometry)<select id="complexity">
+              <option value="0">0 — Mission 002 baseline</option>
+              <option value="1">1 — Microdetail</option>
+              <option value="2">2 — Atmospheric complexity</option>
+              <option value="3" selected>3 — Connected district</option>
+              <option value="4">4 — Maximum density experiment</option>
+            </select></label
+          ><label
+            >District identity preview<select id="identity">
+              <option value="mixed">Mixed district identities</option>
+              <option value="commercial">Commercial Neon Strip</option>
+              <option value="industrial">Industrial Service Zone</option>
+              <option value="residential">Residential Backstreets</option>
+              <option value="abandoned">Abandoned Infrastructure</option>
+            </select></label
+          >
+        </div>
+        <button id="regenerate">Generate district</button
         ><button id="restart">Restart position</button
         ><button id="reset-scenario">Reset mystery &amp; journal</button
         ><label
@@ -116,6 +136,39 @@
       <ul id="journal-entries"></ul>
       <button id="journal-close">Return to street menu</button>
     </section>
+    <section
+      id="laboratory"
+      class="terminal laboratory"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="lab-title"
+      hidden
+    >
+      <div class="eyebrow">MISSION 003 / WORLD LABORATORY</div>
+      <h2 id="lab-title">Density / Variety / Scale</h2>
+      <p id="lab-metadata"></p>
+      <p>
+        Choose geometry complexity, district identity, seed and graphics quality
+        in Controls &amp; graphics. Regenerate applies world changes. Tours are
+        camera diagnostics; walk with WASD to explore.
+      </p>
+      <nav>
+        <button id="lab-tour">Run district tour</button
+        ><button id="lab-core">Run comparison tour</button
+        ><button id="lab-close">Return to menu</button>
+      </nav>
+      <label
+        ><input id="stats-toggle" type="checkbox" /> Performance overlay</label
+      >
+      <details>
+        <summary>Fixed viewpoints</summary>
+        <nav id="lab-views"></nav>
+      </details>
+      <pre id="lab-report">
+Run a tour to measure this configuration. CPU, frame intervals and GPU queries (if available) are reported separately.</pre
+      >
+    </section>
+    <output id="performance" hidden></output>
     <div id="error" role="alert" hidden></div>
     <script type="module" src="/src/main.js"></script>
   </body>

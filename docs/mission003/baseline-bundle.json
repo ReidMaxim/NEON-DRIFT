@@ -1,0 +1,32 @@
+{
+  "publicationCommit": "fa889b9",
+  "files": [
+    {
+      "path": "preview/THIRD_PARTY_NOTICES.txt",
+      "bytes": 1081,
+      "gzip": 667
+    },
+    {
+      "path": "preview/assets/index-B0o8Eb7E.js",
+      "bytes": 548240,
+      "gzip": 143121
+    },
+    {
+      "path": "preview/assets/index-CGJQmDK0.css",
+      "bytes": 4895,
+      "gzip": 1729
+    },
+    {
+      "path": "preview/build.json",
+      "bytes": 71,
+      "gzip": 90
+    },
+    {
+      "path": "preview/index.html",
+      "bytes": 4988,
+      "gzip": 2088
+    }
+  ],
+  "bytes": 559275,
+  "gzip": 147695
+}

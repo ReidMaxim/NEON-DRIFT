@@ -1,4 +1,7 @@
+import { surfacePlate } from "./assemblies.js";
+import { buildAttachments } from "./attachment-scene.js";
 import * as T from "three";
+import { intersects } from "./district.js";
 import { random } from "./world.js";
 import { inReservedArea, powered } from "./scenario.js";
 export function grimeTexture() {
@@ -28,8 +31,7 @@ export function buildLivingStreet(scene, world, layout) {
   const r = random(world.config.seed + 3701),
     geo = new T.BoxGeometry(),
     sphere = new T.IcosahedronGeometry(1, 1),
-    batches = new Map(),
-    fans = [];
+    batches = new Map();
   const metal = new T.MeshStandardMaterial({
       color: "#293f41",
       roughness: 0.85,
@@ -46,7 +48,18 @@ export function buildLivingStreet(scene, world, layout) {
   for (let z = 13; z > -66; z -= 7) {
     const side = r() > 0.5 ? 1 : -1,
       x = side * (half - 0.65);
-    if (inReservedArea(layout, x, z, 1)) continue;
+    if (
+      inReservedArea(layout, x, z, 1) ||
+      world.city.roads
+        .slice(1)
+        .some((road) =>
+          intersects(
+            { minX: x - 1, maxX: x + 1, minZ: z - 3, maxZ: z + 3 },
+            road,
+          ),
+        )
+    )
+      continue;
     add(geo, metal, x, 0.55, z, 0.9, 1.1, 1.65);
     add(geo, rust, x, 1.15, z, 1.05, 0.12, 1.85);
     for (let j = 0; j < 3; j++)
@@ -71,19 +84,9 @@ export function buildLivingStreet(scene, world, layout) {
         0.015,
         0.1 + r() * 0.3,
       );
-    add(geo, rust, x, 0.09, z - 2, 0.8, 0.04, 1.2);
-  }
-  for (const z of [10, -22, -45]) {
-    const fan = new T.Group();
-    fan.position.set(half - 0.35, 3.2, z);
-    for (let i = 0; i < 4; i++) {
-      const blade = new T.Mesh(geo, metal);
-      blade.scale.set(0.8, 0.16, 0.06);
-      blade.rotation.z = (i * Math.PI) / 2;
-      fan.add(blade);
-    }
-    scene.add(fan);
-    fans.push(fan);
+    const cover = surfacePlate(world, x, z - 2, 0.8, 1.2);
+    if (cover)
+      add(geo, rust, x, cover.position[1] + 0.002, z - 2, 0.8, 0.002, 1.2);
   }
   for (const { geometry, material, items } of batches.values()) {
     const mesh = new T.InstancedMesh(geometry, material, items.length),
@@ -97,37 +100,7 @@ export function buildLivingStreet(scene, world, layout) {
     mesh.computeBoundingSphere();
     scene.add(mesh);
   }
-  const data = new Float32Array(36 * 3);
-  for (let i = 0; i < 36; i++)
-    data.set(
-      [i % 2 ? -half + 1 : half - 1, r() * 2, (i % 2 ? -24 : 10) + r()],
-      i * 3,
-    );
-  const g = new T.BufferGeometry();
-  g.setAttribute("position", new T.BufferAttribute(data, 3));
-  const mat = new T.ShaderMaterial({
-    transparent: true,
-    depthWrite: false,
-    uniforms: { time: { value: 0 } },
-    vertexShader: `uniform float time;varying float a;void main(){vec3 p=position;float phase=fract(position.y*.5+time*.12);p.y=.1+phase*3.;p.x+=sin(time*.4+position.z)*phase*.5;vec4 mv=modelViewMatrix*vec4(p,1.);gl_Position=projectionMatrix*mv;gl_PointSize=min(100.,240.*(.3+phase)/max(1.,-mv.z));a=sin(phase*3.14159)*.055;}`,
-    fragmentShader: `varying float a;void main(){float d=length(gl_PointCoord-.5);gl_FragColor=vec4(.5,.65,.7,a*smoothstep(.5,.1,d));}`,
-  });
-  const steam = new T.Points(g, mat);
-  steam.frustumCulled = false;
-  scene.add(steam);
-  const flicker = new T.MeshBasicMaterial({ color: "#72c8bc" });
-  const faulty = new T.Mesh(geo, flicker);
-  faulty.position.set(half - 1.5, 5.55, 9);
-  faulty.scale.set(1.4, 0.16, 0.3);
-  scene.add(faulty);
-  return {
-    update(time, preset) {
-      for (const fan of fans) fan.rotation.z = time * 0.65;
-      mat.uniforms.time.value = time;
-      g.setDrawRange(0, preset.bloom ? 36 : 12);
-      flicker.color.setScalar(Math.sin(time * 1.7) > -0.94 ? 0.7 : 0.08);
-    },
-  };
+  return buildAttachments(scene, world);
 }
 export function buildInfrastructure(scene, game) {
   const geo = new T.BoxGeometry(),
