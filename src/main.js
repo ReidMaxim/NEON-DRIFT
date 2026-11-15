@@ -1,3 +1,13 @@
+import {
+  createGame,
+  saveGame,
+  resetGame,
+  scenarioColliders,
+  nearby,
+} from "./scenario.js";
+import { buildLivingStreet, buildInfrastructure } from "./living.js";
+import { createAudio } from "./audio.js";
+import { createInteractionUI } from "./interaction-ui.js";
 import * as T from "three";
 import { EffectComposer } from "three/addons/postprocessing/EffectComposer.js";
 import { RenderPass } from "three/addons/postprocessing/RenderPass.js";
@@ -24,8 +34,24 @@ try {
 async function start() {
   const params = new URLSearchParams(location.search),
     seed = Number(params.get("seed") ?? 2049),
-    world = generate({ seed }),
-    boxes = colliders(world);
+    world = generate({ seed });
+  let saved = null;
+  try {
+    saved = localStorage.getItem(
+      `neon-drift:${import.meta.env.BASE_URL.includes("/preview/") ? "preview:" : ""}m2:${seed}`,
+    );
+  } catch {}
+  const game = createGame(world, saved),
+    audio = createAudio();
+  let boxes = [];
+  const rebuildCollision = () => {
+    boxes = [...colliders(world), ...scenarioColliders(game.layout)];
+    if (!game.state.doorOpen) {
+      const r = game.layout.room;
+      boxes.push({ minX: r.minX, maxX: r.maxX, minZ: -6.12, maxZ: -5.88 });
+    }
+  };
+  rebuildCollision();
   $("seed").value = seed;
   const renderer = new T.WebGLRenderer({
     canvas: $("world"),
@@ -42,6 +68,8 @@ async function start() {
   camera.rotation.order = "YXZ";
   const visual = buildScene(scene, world),
     composer = new EffectComposer(renderer);
+  const living = buildLivingStreet(scene, world, game.layout),
+    infrastructure = buildInfrastructure(scene, game);
   composer.addPass(new RenderPass(scene, camera));
   const bloom = new UnrealBloomPass(new T.Vector2(1, 1), 0.35, 0.65, 1.05);
   composer.addPass(bloom);
@@ -59,6 +87,7 @@ async function start() {
     frameSum = 0;
   const player = { x: 1, z: 13 },
     keys = new Set();
+  game.player = player;
   const reset = () => {
     player.x = 1;
     player.z = 13;
@@ -85,7 +114,7 @@ async function start() {
     keys.clear();
     document.exitPointerLock?.();
     $("menu").hidden = false;
-    $("terminal").hidden = true;
+    ui.hide();
     $("prompt").hidden = true;
     $("enter").focus();
   };
@@ -113,35 +142,57 @@ async function start() {
       pitch = Math.max(-1.45, Math.min(1.45, pitch - e.movementY * 0.002));
     }
   });
-  const command = (c) => {
-    const out = terminalCommand(c);
-    if (out === null) {
-      showMenu();
-      return;
+  const persist = () => {
+    rebuildCollision();
+    try {
+      localStorage.setItem(
+        `neon-drift:${import.meta.env.BASE_URL.includes("/preview/") ? "preview:" : ""}m2:${seed}`,
+        saveGame(game),
+      );
+      $("save-status").textContent = "Progress saved locally";
+    } catch {
+      $("save-status").textContent =
+        "Storage unavailable — progress lasts this visit";
     }
-    $("terminal-output").textContent = out;
   };
-  const openTerminal = () => {
-    $("prompt").hidden = true;
-    state = "terminal";
-    keys.clear();
-    document.exitPointerLock?.();
-    $("menu").hidden = true;
-    $("terminal").hidden = false;
-    command("status");
-    $("command").focus();
+  const ui = createInteractionUI(game, {
+    audio,
+    onChange: persist,
+    close: showMenu,
+    pause(mode) {
+      state = mode;
+      keys.clear();
+      document.exitPointerLock?.();
+      $("menu").hidden = true;
+      $("prompt").hidden = true;
+      ui.hide();
+    },
+  });
+  ui.refresh();
+  $("reset-scenario").onclick = () => {
+    resetGame(game);
+    reset();
+    ui.refresh();
+    showMenu();
   };
-  document
-    .querySelectorAll("[data-command]")
-    .forEach((b) => (b.onclick = () => command(b.dataset.command)));
-  $("command-form").onsubmit = (e) => {
-    e.preventDefault();
-    command($("command").value);
-    $("command").value = "";
+  $("audio-toggle").onclick = async () => {
+    if (audio.enabled) {
+      audio.mute();
+      $("audio-toggle").textContent = "Enable ambient audio";
+    } else {
+      $("audio-toggle").textContent = (await audio.enable())
+        ? "Mute ambient audio"
+        : "Audio unavailable — retry";
+    }
   };
+  $("volume").oninput = () => audio.setVolume(Number($("volume").value) / 100);
   addEventListener("keydown", (e) => {
-    if (state === "terminal" && e.code === "Tab") {
-      const items = $("terminal").querySelectorAll("button,input");
+    if (
+      ["terminal", "inspect", "journal"].includes(state) &&
+      e.code === "Tab"
+    ) {
+      const panel = $(state === "inspect" ? "inspector" : state);
+      const items = panel.querySelectorAll("button,input");
       const first = items[0],
         last = items[items.length - 1];
       if (e.shiftKey && document.activeElement === first) {
@@ -154,16 +205,15 @@ async function start() {
     }
     if (state === "play") {
       keys.add(e.code);
-      if (
-        e.code === "KeyE" &&
-        Math.hypot(player.x - world.terminal.x, player.z - world.terminal.z) <
-          2.5
-      )
-        openTerminal();
+      if (e.code === "KeyE" && !e.repeat) {
+        const object = nearby(game, player, yaw);
+        if (object) ui.open(object);
+      }
+      if (e.code === "KeyJ" && !e.repeat) ui.journal();
     }
     if (
       e.code === "Escape" &&
-      (state === "terminal" || state === "play" || state === "tour")
+      ["terminal", "inspect", "journal", "play", "tour"].includes(state)
     )
       showMenu();
   });
@@ -175,6 +225,8 @@ async function start() {
   document.addEventListener("visibilitychange", () => {
     last = 0;
     keys.clear();
+    if (document.hidden) audio.suspend();
+    else audio.resume();
   });
   $("restart").onclick = () => {
     reset();
@@ -222,7 +274,14 @@ async function start() {
       },
       reset,
       quality: () => quality,
-      snapshot: () => ({ player: { ...player }, state, yaw, pitch }),
+      snapshot: () => ({
+        player: { ...player },
+        state,
+        yaw,
+        pitch,
+        game: JSON.parse(saveGame(game)),
+        audio: { enabled: audio.enabled, status: audio.status },
+      }),
     });
   }
   function frame(now) {
@@ -248,12 +307,14 @@ async function start() {
       );
       camera.position.set(player.x, 1.72, player.z);
       camera.rotation.set(pitch, yaw, 0);
-      $("prompt").hidden =
-        Math.hypot(player.x - world.terminal.x, player.z - world.terminal.z) >=
-        2.5;
+      const target = nearby(game, player, yaw);
+      $("prompt").hidden = !target;
+      if (target) $("prompt").textContent = "[ E ]  " + target.label;
     }
     diagnostics?.update(dt, raw);
     visual.update(elapsed, camera, presets[quality]);
+    living.update(elapsed, presets[quality]);
+    infrastructure.update(elapsed);
     renderer.info.reset();
     composer.render();
     if (!diagnostics?.active && state === "play") {

@@ -1,3 +1,5 @@
+import { grimeTexture } from "./living.js";
+import { scenarioLayout, inReservedArea } from "./scenario.js";
 import * as T from "three";
 import { random } from "./world.js";
 export function buildScene(scene, world) {
@@ -9,6 +11,9 @@ export function buildScene(scene, world) {
   const mats = [solid("#263442"), solid("#302d40"), solid("#203d42")],
     metal = solid("#36464b"),
     dark = solid("#101d27");
+  const grime = grimeTexture();
+  for (const material of mats) material.map = grime;
+  const layout = scenarioLayout(world);
   const windows = world.config.neon.map(
     (color) =>
       new T.MeshBasicMaterial({
@@ -195,6 +200,7 @@ export function buildScene(scene, world) {
   }
   for (const z of [7, -8, -27, -49]) {
     for (let j = 0; j < 4; j++) {
+      if (inReservedArea(layout, -half + 0.45 + j * 0.3, z + j * 0.4)) continue;
       box(
         -half + 0.45 + j * 0.3,
         0.13 + j * 0.045,

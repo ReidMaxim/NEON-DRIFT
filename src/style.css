@@ -334,3 +334,78 @@ body:has(#terminal:not([hidden]))::after {
     margin-left: 8px;
   }
 }
+#objective {
+  position: fixed;
+  left: 38px;
+  bottom: 65px;
+  color: #bdd3cf;
+  background: #071019b0;
+  padding: 9px 12px;
+  font: 10px monospace;
+  letter-spacing: 1px;
+}
+.terminal {
+  max-height: 80vh;
+  overflow: auto;
+}
+.terminal pre {
+  max-height: 35vh;
+  overflow: auto;
+  font-size: 12px;
+}
+#inspect-body {
+  font: 14px/1.9 monospace;
+  color: #c4e0d5;
+  white-space: pre-line;
+}
+#inspect-close,
+#journal-close {
+  margin-top: 24px;
+}
+#journal-entries {
+  padding-left: 20px;
+  font: 13px/1.8 monospace;
+}
+#journal-entries li {
+  margin: 18px 0;
+}
+#save-status {
+  display: block;
+  font: 9px monospace;
+  margin-top: 10px;
+  color: #a7bfb6;
+}
+body:has(#inspector:not([hidden]))::after,
+body:has(#journal:not([hidden]))::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background: #020811bb;
+  z-index: 1;
+}
+.panel {
+  max-height: 72vh;
+  overflow-y: auto;
+}
+#audio-toggle {
+  width: 100%;
+}
+@media (max-width: 650px) {
+  #objective {
+    left: 18px;
+    bottom: 58px;
+    font-size: 9px;
+    max-width: 80vw;
+  }
+  #location {
+    display: none;
+  }
+  #notice {
+    font-size: 10px;
+    line-height: 1.5;
+    color: #acbac6;
+  }
+  .terminal pre {
+    max-height: 28vh;
+  }
+}

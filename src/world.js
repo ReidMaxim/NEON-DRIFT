@@ -1,3 +1,4 @@
+import { scenarioLayout, inReservedArea } from "./scenario.js";
 export const defaults = Object.freeze({
   seed: 2049,
   density: 1,
@@ -75,13 +76,16 @@ export function generate(config = {}) {
       h: 0.4 + p() * 1.1,
     });
   }
-  return {
+  const world = {
     config: c,
     buildings,
     props,
     terminal: { x: -half + 1.2, z: 2 },
     bounds: { minX: -half + 0.35, maxX: half - 0.35, minZ: -69, maxZ: 18 },
   };
+  const layout = scenarioLayout(world);
+  world.props = world.props.filter((p) => !inReservedArea(layout, p.x, p.z));
+  return world;
 }
 export function colliders(world) {
   return [
