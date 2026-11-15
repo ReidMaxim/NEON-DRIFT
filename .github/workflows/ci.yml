@@ -16,8 +16,19 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npm test
-      - run: npm run build
+      - name: Build production candidate
+        run: npm run build
       - uses: actions/upload-artifact@v4
         with:
           name: neon-drift-static
+          path: dist
+      - name: Build experimental preview
+        if: github.event_name == 'push' && startsWith(github.ref, 'refs/heads/feat/')
+        run: npm run build -- --base=/NEON-DRIFT/preview/
+        env:
+          VITE_PREVIEW: "true"
+      - uses: actions/upload-artifact@v4
+        if: github.event_name == 'push' && startsWith(github.ref, 'refs/heads/feat/')
+        with:
+          name: neon-drift-preview
           path: dist
