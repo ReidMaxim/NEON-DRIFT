@@ -21,3 +21,7 @@ Do not use a second standalone Pages publisher: every publication must preserve 
 ## Verification
 
 Check both URLs return HTTP 200 and their referenced assets load. Preview must show EXPERIMENTAL PREVIEW; production must not. Compare every production file to the saved production artifact after a preview publish. Test that validation failure cannot reach the publisher by inspecting its success-only condition, and exercise assembly preservation tests. Inspect the build commit in `/preview/build.json` to identify what is playable. The Actions summary links directly to both versions.
+
+Live verification on 2026-11-15 succeeded in Edge 157: both URLs returned 200, loaded their assets without errors, rendered, accepted pointer lock and keyboard movement, opened the Escape menu, and survived a hard refresh. The experimental banner appears only in preview. Every production file (HTML, JS, CSS and license) matches the original published Mission 001 artifact byte for byte. See [machine-readable evidence](preview-evidence/verification.json) and [successful automatic publication](https://github.com/ReidMaxim/NEON-DRIFT/actions/runs/43755498295).
+
+Re-run live verification with `node scripts/verify-deployment.mjs`; optionally set `PRODUCTION_SNAPSHOT` to the preserved production directory to compare every file's bytes. These are browser automation checks, not physical mouse testing or completion of Mission 002 acceptance.

@@ -54,17 +54,15 @@ npm run test:browser
 
 The script's default test URL is `http://127.0.0.1:5173/NEON-DRIFT/`. Set `BROWSER_CHANNEL=chrome` for installed Chrome. Results go to ignored `artifacts/`. Run `npm run build && npm run test:production` to check the built base path, offline dependencies, and graphics failure messages. Native mouse look and subjective motion quality still require a human pass. Formatting: `npm run format` / `npm run format:check`.
 
-## GitHub Pages
+## Browser playtesting and GitHub Pages
 
-Vite's base is **`/NEON-DRIFT/`**, matching this repository's project-site URL. Production assets are bundled locally using that base. There is no client router or backend.
+[Play the stable game](https://reidmaxim.github.io/NEON-DRIFT/) or [Play the experimental development preview](https://reidmaxim.github.io/NEON-DRIFT/preview/).
 
-1. Review and merge the feature PR only after acceptance testing.
-2. In repository **Settings → Pages**, choose **GitHub Actions**.
-3. After deployment approval, run **Deploy GitHub Pages (manual approval)** from `main` in the Actions tab.
-4. Optionally require a reviewer on the `github-pages` environment.
-5. Verify `https://reidmaxim.github.io/NEON-DRIFT/`, including a hard refresh and its terminal interaction.
+Successful validation of pushes to the selected development branch automatically publishes the preview. No clone, local server, merge, or manual Actions dispatch is required to play it. Failed validation retains the last working preview. The experimental banner links back to the stable version.
 
-The deployment workflow is manual and restricted to `main`; ordinary pushes and PRs only validate and upload a build artifact. No publication is triggered by this mission branch.
+Production stays at `/NEON-DRIFT/`; preview uses `/NEON-DRIFT/preview/`. The serialized publisher preserves both paths using the durable `pages-state` branch. Production publication remains manual from approved main. Development gameplay is never automatically merged into main.
+
+See [preview setup, branch selection, safeguards, limitations and verified evidence](docs/PREVIEW_DEPLOYMENTS.md). For future missions, update the selected branch in `.github/preview.json` on main and retain the same CI/Vite setup in that branch.
 
 ## Documentation
 
