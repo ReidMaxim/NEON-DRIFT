@@ -1,4 +1,4 @@
-import { assemblyBounds, overlaps3 } from "./assemblies.js";
+import { assemblyBounds, overlaps3, surfacePlate } from "./assemblies.js";
 import * as T from "three";
 import { identities, boundsOf, intersects } from "./district.js";
 import { random } from "./random.js";
@@ -452,20 +452,22 @@ export function buildCity(scene, world) {
         sphere,
         true,
       );
-    add(p.x, 0.05, p.z - 0.7, 0.7, 0.08, 0.7, rust);
+    const cover = surfacePlate(world, p.x, p.z - 0.7, 0.7, 0.7);
+    if (cover)
+      add(p.x, cover.position[1] + 0.002, p.z - 0.7, 0.7, 0.002, 0.7, rust);
   }
-  // Repair patches live above the road surface with a deliberate height separation.
-  const rand = random(world.config.seed + 819);
-  for (const seg of world.city.roads)
-    for (let i = 0; i < (tier === 4 ? 32 : 10); i++) {
-      const x = seg.minX + rand() * (seg.maxX - seg.minX),
-        z = seg.minZ + rand() * (seg.maxZ - seg.minZ);
-      if (Math.abs(x) < 2 && z > 0) continue;
-      const rw = 0.3 + rand(),
-        rd = 0.5 + rand() * 1.6;
-      add(x, 0.03, z, rw + 0.08, 0.016, rd + 0.08, rust, cube, true);
-      add(x, 0.045, z, rw, 0.012, rd, wear, cube, true);
-    }
+  // Surface decoration has no player collider; local heights follow its supporting plane.
+  for (const patch of world.surfaceDecorations)
+    for (const p of patch.parts)
+      add(
+        patch.position[0],
+        patch.position[1] + p.position[1],
+        patch.position[2],
+        ...p.size,
+        p.material === "rust" ? rust : wear,
+        cube,
+        true,
+      );
   if (tier >= 2) {
     const particleGeo = new T.BufferGeometry(),
       r = random(world.config.seed + 99),

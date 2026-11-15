@@ -1,7 +1,7 @@
 import { chromium } from "@playwright/test";
 import { mkdir, writeFile } from "node:fs/promises";
 const url = process.env.TEST_URL || "http://127.0.0.1:5190/NEON-DRIFT/preview/",
-  out = "artifacts/attachment-correction",
+  out = process.env.EVIDENCE_DIR || "artifacts/attachment-correction",
   label = process.env.LABEL || "before";
 await mkdir(out, { recursive: true });
 const browser = await chromium.launch({ channel: "msedge", headless: true }),

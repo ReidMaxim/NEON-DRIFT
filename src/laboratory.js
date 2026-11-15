@@ -23,6 +23,7 @@ export function createLaboratory({
   pause,
   onComplete,
   snapshot,
+  stagePlayer,
   quality,
   cityStats,
 }) {
@@ -145,6 +146,19 @@ export function createLaboratory({
   const api = {
     poses: viewpoints,
     attachments: world.attachments,
+    stageSurfaceCrossing(index = 0, direction = 1) {
+      cancel();
+      pause("menu");
+      const v = world.attachments.vents[index];
+      if (!v || ![-1, 1].includes(direction))
+        throw new Error("Invalid surface crossing");
+      stagePlayer(
+        v.position[0],
+        v.position[2] + direction * 1.15,
+        direction === 1 ? 0 : Math.PI,
+      );
+      return { x: v.position[0], z: v.position[2], direction };
+    },
     attachmentValidation: () => validateAssemblies(world),
     poseAttachment(kind, index = 0, angle = 0) {
       cancel();

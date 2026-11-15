@@ -121,18 +121,18 @@ export const fanParts = () => [
   },
 ];
 export const ventParts = () => [
-  box("footing", [0, 0.04, 0], [1.12, 0.08, 0.8]),
-  box("opening", [0, 0.1, 0], [0.94, 0.035, 0.62], "dark"),
+  box("footing", [0, -0.039, 0], [1.12, 0.08, 0.8]),
+  box("opening", [0, -0.0165, 0], [0.94, 0.035, 0.62], "dark"),
   ...[-1, 1].map((s) =>
-    box(`rim-u-${s}`, [s * 0.52, 0.12, 0], [0.08, 0.16, 0.8]),
+    box(`rim-u-${s}`, [s * 0.52, -0.006, 0], [0.08, 0.02, 0.8]),
   ),
   ...[-1, 1].map((s) =>
-    box(`rim-v-${s}`, [0, 0.12, s * 0.36], [0.96, 0.16, 0.08]),
+    box(`rim-v-${s}`, [0, -0.006, s * 0.36], [0.96, 0.02, 0.08]),
   ),
   ...Array.from({ length: 8 }, (_, i) =>
     box(
       `grate-${i}`,
-      [-0.4 + i * 0.114, 0.14, 0],
+      [-0.4 + i * 0.114, -0.0085, 0],
       [0.045, 0.025, 0.64],
       "brass",
     ),
@@ -264,6 +264,17 @@ function corePipeObstacles(surface) {
     }),
   );
 }
+// Reserve a short bidirectional walking strip, including the player's 0.28m radius.
+export function surfaceTraversalBounds(v) {
+  return {
+    minX: v.position[0] - 0.43,
+    maxX: v.position[0] + 0.43,
+    minZ: v.position[2] - 1.5,
+    maxZ: v.position[2] + 1.5,
+    minY: v.position[1],
+    maxY: v.position[1] + 1.9,
+  };
+}
 export function generateAssemblies(world) {
   const surfaces = buildingSurfaces(world),
     layout = scenarioLayout(world),
@@ -290,6 +301,7 @@ export function generateAssemblies(world) {
       const fan = {
         id: `fan-${surface.id}`,
         type: "fan",
+        collision: "solid",
         hostId: surface.id,
         position: surfacePoint(surface, u, 2, 0),
         yaw: surface.yaw,
@@ -314,15 +326,22 @@ export function generateAssemblies(world) {
   }
   const half = world.config.streetWidth / 2;
   for (const side of [-1, 1]) {
-    for (let i = 0; i < 40; i++) {
-      const z = (side < 0 ? 12 : -20) - i * 1.5,
+    for (let i = 0; i < 160; i++) {
+      const z = (side < 0 ? 12 : -20) - i * 0.5,
         x = side * (half - 0.68),
         yaw = Math.atan2(-side, 0),
         height = terrainHeightAt(world, x, z);
-      if (height === null || inReservedArea(layout, x, z, 1.05)) continue;
+      if (
+        height === null ||
+        z < world.bounds.minZ + 1.5 ||
+        z > world.bounds.maxZ - 1.5 ||
+        inReservedArea(layout, x, z, 1.05)
+      )
+        continue;
       const vent = {
         id: `steam-${side}`,
         type: "steam",
+        collision: "surface",
         hostId: "terrain",
         position: [x, height, z],
         yaw,
@@ -330,7 +349,7 @@ export function generateAssemblies(world) {
         emitter: {
           parentId: `steam-${side}`,
           sourcePart: "opening",
-          position: [0, 0.17, 0],
+          position: [0, 0.019, 0],
           spread: [0.34, 0.21],
           rise: 2,
         },
@@ -339,6 +358,9 @@ export function generateAssemblies(world) {
       const bounds = assemblyBounds(vent, true);
       if (
         !flatFooting(world, vent) ||
+        obstacles.some((o) =>
+          overlaps3(surfaceTraversalBounds(vent), o, 0.12),
+        ) ||
         clearanceReservations(world).some((o) => overlaps3(bounds, o, 0.08)) ||
         obstacles.some((o) => overlaps3(bounds, o, 0.12)) ||
         fans.some((f) => overlaps3(bounds, assemblyBounds(f), 0.12))
@@ -417,6 +439,7 @@ export function generateAssemblies(world) {
         const lamp = {
           id: `lamp-${side}-${anchorZ}`,
           type: "lamp",
+          collision: "solid",
           hostId: "terrain",
           position: [x, ground, z],
           yaw: Math.atan2(-side, 0),
@@ -436,7 +459,13 @@ export function generateAssemblies(world) {
               .filter((o) => o.maxY < 2)
               .some((o) => overlaps3(bounds, o, 0.03)) ||
             [...fans, ...vents].some((o) =>
-              overlaps3(bounds, assemblyBounds(o, true), 0.05),
+              overlaps3(
+                bounds,
+                o.collision === "surface"
+                  ? surfaceTraversalBounds(o)
+                  : assemblyBounds(o, true),
+                0.05,
+              ),
             )
           );
         });
@@ -532,6 +561,8 @@ export function validateAssemblies(world, assemblies = world.attachments) {
       fail(f.id, "Fan collides with neighboring infrastructure");
   }
   for (const v of assemblies.vents) {
+    if (obstacles.some((o) => overlaps3(surfaceTraversalBounds(v), o, 0.12)))
+      fail(v.id, "Grate traversal approach blocked");
     if (!flatFooting(world, v))
       fail(v.id, "Footing unsupported or crosses terrain step");
     if (v.emitter?.parentId !== v.id || v.emitter.sourcePart !== "opening")
@@ -539,8 +570,18 @@ export function validateAssemblies(world, assemblies = world.attachments) {
     const opening = v.parts.find((p) => p.id === "opening"),
       grates = v.parts.filter((p) => p.id.startsWith("grate-")),
       footing = v.parts.find((p) => p.id === "footing");
-    if (!footing || Math.abs(footing.position[1] - footing.size[1] / 2) > EPS)
-      fail(v.id, "Grate footing is detached from terrain");
+    if (
+      !footing ||
+      Math.abs(footing.position[1] + footing.size[1] / 2 - 0.001) > EPS
+    )
+      fail(v.id, "Grate backing is not integrated with pavement");
+    if (v.collision !== "surface")
+      fail(v.id, "Ground fixture must be walkable surface decoration");
+    for (const p of v.parts) {
+      const top = p.position[1] + p.size[1] / 2;
+      if (top < 0.0005 || top > 0.005)
+        fail(v.id, "Ground fixture is raised or buried");
+    }
     if (!opening || grates.length !== 8)
       fail(v.id, "Incomplete steam source geometry");
     const top = Math.max(...grates.map((p) => p.position[1] + p.size[1] / 2));
@@ -623,4 +664,53 @@ export function clearsAssemblyFixtures(world, box) {
   return ![...world.attachments.fans, ...world.attachments.vents].some((a) =>
     overlaps3(box, assemblyBounds(a), 0.035),
   );
+}
+
+export function generateSurfaceDecorations(world) {
+  if (!world.config.tier) return [];
+  const rand = random(world.config.seed + 819),
+    patches = [];
+  for (const seg of world.city.roads)
+    for (let i = 0; i < (world.config.tier === 4 ? 32 : 10); i++) {
+      const x = seg.minX + rand() * (seg.maxX - seg.minX),
+        z = seg.minZ + rand() * (seg.maxZ - seg.minZ);
+      if (Math.abs(x) < 2 && z > 0) continue;
+      const w = 0.3 + rand(),
+        d = 0.5 + rand() * 1.6,
+        y = terrainHeightAt(world, x, z);
+      if (y === null) continue;
+      const patch = {
+        id: `repair-${patches.length}`,
+        type: "repair",
+        collision: "surface",
+        position: [x, y, z],
+        yaw: 0,
+        parts: [
+          box("edge", [0, 0.001, 0], [w + 0.08, 0.001, d + 0.08], "rust"),
+          box("infill", [0, 0.0025, 0], [w, 0.001, d], "wear"),
+        ],
+      };
+      if (
+        flatFooting(world, patch) &&
+        !world.attachments.vents.some((v) =>
+          overlaps3(assemblyBounds(patch), assemblyBounds(v), 0.02),
+        )
+      )
+        patches.push(patch);
+    }
+  return patches;
+}
+
+// Thin surface overlays retain a dark seam without an above-ground plinth.
+export function surfacePlate(world, x, z, width, depth) {
+  const y = terrainHeightAt(world, x, z);
+  if (y === null) return null;
+  const plate = {
+    type: "cover",
+    collision: "surface",
+    position: [x, y, z],
+    yaw: 0,
+    parts: [box("cover", [0, 0.002, 0], [width, 0.002, depth])],
+  };
+  return flatFooting(world, plate) ? plate : null;
 }

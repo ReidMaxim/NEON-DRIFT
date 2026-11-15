@@ -1,3 +1,4 @@
+import { surfacePlate } from "./assemblies.js";
 import { buildAttachments } from "./attachment-scene.js";
 import * as T from "three";
 import { intersects } from "./district.js";
@@ -83,7 +84,9 @@ export function buildLivingStreet(scene, world, layout) {
         0.015,
         0.1 + r() * 0.3,
       );
-    add(geo, rust, x, 0.09, z - 2, 0.8, 0.04, 1.2);
+    const cover = surfacePlate(world, x, z - 2, 0.8, 1.2);
+    if (cover)
+      add(geo, rust, x, cover.position[1] + 0.002, z - 2, 0.8, 0.002, 1.2);
   }
   for (const { geometry, material, items } of batches.values()) {
     const mesh = new T.InstancedMesh(geometry, material, items.length),

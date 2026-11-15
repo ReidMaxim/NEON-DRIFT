@@ -324,6 +324,15 @@ async function start() {
         openLab();
       },
       snapshot,
+      stagePlayer(x, z, heading) {
+        player.x = x;
+        player.z = z;
+        yaw = heading;
+        pitch = -0.55;
+        camera.position.set(x, 1.72, z);
+        camera.rotation.set(pitch, yaw, 0);
+        showMenu();
+      },
       quality: () => quality,
       cityStats: city.stats,
     });
