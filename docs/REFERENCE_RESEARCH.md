@@ -1,0 +1,23 @@
+# Reference research — Abyssal Garden
+
+Inspected 2026-11-15 through the GitHub connector. Read the README, original prompt, world/math/quality/development modules, rendering and shader sections, and build script/package metadata. Third-party code was treated as untrusted reference material; no reference setup script was executed, and no source was copied into NEON-DRIFT.
+
+## Sources and findings
+
+- [README](https://github.com/Noniv/abyssal-garden/blob/main/README.md): self-contained procedural underwater experience, six views, detail presets, and optional development fly-through. Its published GPU numbers describe its own hardware/project, not NEON-DRIFT.
+- [Original prompt](https://github.com/Noniv/abyssal-garden/blob/main/prompt.txt): visual quality before frame pacing before size, fixed camera evidence, separate critic, and measured benchmark. Applied the evidence discipline, not its engine mandate or underwater content.
+- [world.js](https://github.com/Noniv/abyssal-garden/blob/main/source/src/world.js): designed rock primitives and clear regions form a composition before random detail. Surface-nets terrain is bucketed into XZ cells; instances use spatial stores. Quality thinning preserves the random stream. Applied authored landmarks plus seeded facade dressing; a box-based alley does not need terrain density fields.
+- [math.js](https://github.com/Noniv/abyssal-garden/blob/main/source/src/math.js): independent random streams, spatial hash/value noise, surface-nets extraction, mesh sweeps/tubes and compact packed vertex buffers. Applied separate architecture/prop streams and reusable primitive construction, independently implemented with an LCG and Three.js primitives.
+- [shaders.js](https://github.com/Noniv/abyssal-garden/blob/main/source/src/shaders.js): distance-dependent absorption/fog, procedural surface coloring, animated organisms and water, and bloom chain. Applied depth fog, shader rain, analytic wet-surface streaks, and restrained bloom using GLSL/Three.js, not WGSL translation.
+- [main.js](https://github.com/Noniv/abyssal-garden/blob/main/source/src/main.js): packed instance layouts, persistent GPU/uniform buffers, cell draw/cull ranges, separate near/far geometry, reused render passes, GPU timestamp support, adaptive pixels and detail distance. Applied instancing, persistent shader buffers, modest culling, render-scale adaptation and explicit camera state. NEON-DRIFT does not implement timestamp queries or the reference's full spatial LOD system.
+- [quality.js](https://github.com/Noniv/abyssal-garden/blob/main/source/src/quality.js): presets selected before generation, progressively thinned scenery, remembered settings, crash-level fallback. Applied explicit Low/Medium/High presets. Automatic crash recovery and remembered tuning are deferred.
+- [dev.js](https://github.com/Noniv/abyssal-garden/blob/main/source/src/dev.js): separate developer bundle, preallocated frame/GPU logs, scripted route, frozen adaptive resolution, average/p99/max statistics. Applied six poses, an interpolated 50-second tour, preallocated samples, dev-only import and honest frame-interval reporting.
+- [build.mjs](https://github.com/Noniv/abyssal-garden/blob/main/source/build.mjs) and [package.json](https://github.com/Noniv/abyssal-garden/blob/main/source/package.json): ordered source concatenation into an HTML template with esbuild JS/CSS/WGSL minification; separate readable/development builds. NEON-DRIFT instead uses Vite's static asset graph and repository base path. A multi-file static bundle is acceptable; visual quality takes priority over the reference's single-file size.
+
+## Traceability
+
+Selected inspected file blob SHAs: README `f6147e4420d773bfdcad183761ed50b60fa6093b`; world `69d04634ed81e035a7a5c6127acdca66dcf611bb`; shaders `e77e2b8c73990bbb04817756289da52570b40012`; math `86b2020c54e898453a58f8e08dca2ffb421904d9`; main `022cc757e066dddc96878029e1514d2869673a5c`; quality `48412b488fd9c93ad5ff69f163e661d8c780e7be`; dev `416899d7e66aec3b1daa178da8d5d53086059056`; build `6e2b1fbc94b33e28532674ec739283fe50fac6e4`.
+
+## Limits and attribution
+
+The reference was studied statically, not benchmarked or executed. Its performance and visual claims were not independently reproduced. The useful transferable lesson is authored composition plus efficient procedural detail and reproducible evidence, rather than reproducing its content. The reference is MIT licensed; since no actual source was incorporated, it is acknowledged as conceptual inspiration rather than included as a code dependency. Three.js and build-tool notices are documented separately.
