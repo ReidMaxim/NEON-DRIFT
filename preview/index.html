@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta name="theme-color" content="#080e1c" />
+    <link
+      rel="icon"
+      href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 32 32%27%3E%3Crect width=%2732%27 height=%2732%27 fill=%27%23081520%27/%3E%3Ctext x=%276%27 y=%2724%27 fill=%27%238fffe1%27 font-size=%2724%27%3EN%3C/text%3E%3C/svg%3E"
+    />
+    <title>EXPERIMENTAL PREVIEW — NEON-DRIFT — District 07</title>
+    <script type="module" crossorigin src="/NEON-DRIFT/preview/assets/index-B0o8Eb7E.js"></script>
+    <link rel="stylesheet" crossorigin href="/NEON-DRIFT/preview/assets/index-CGJQmDK0.css">
+  </head>
+  <body><aside aria-label="Experimental development build" style="position:fixed;top:0;left:0;right:0;z-index:100;text-align:center;background:#e6bc65;color:#101820;font:700 11px/24px monospace;letter-spacing:1px">EXPERIMENTAL PREVIEW · WORK IN PROGRESS · <a href="/NEON-DRIFT/" style="color:inherit">PLAY STABLE VERSION</a></aside>
+    <canvas id="world" aria-label="Procedural cyberpunk district"></canvas>
+    <header>
+      <a class="brand" href="./">N<span>／</span>D</a>
+      <div>NEON–DRIFT<small>DISTRICT 07 · AFTER HOURS</small></div>
+      <button id="menu-button" aria-label="Open menu">
+        MENU <span>≡</span>
+      </button>
+    </header>
+    <div id="objective">DISTRICT 07 / SIGNAL INTERRUPTED</div>
+    <div id="location">
+      <i></i> RELAY SIGNAL DETECTED <span>SECTOR 07 / 001</span>
+    </div>
+    <div id="crosshair">+</div>
+    <div id="prompt" hidden><kbd>E</kbd> ACCESS RELAY TERMINAL</div>
+    <footer>
+      <span>01:47 <b>／</b> PERSISTENT RAIN</span
+      ><span id="hint">WASD MOVE · MOUSE LOOK · E INTERACT · J JOURNAL</span>
+    </footer>
+    <section id="menu" class="panel" aria-label="Exploration menu">
+      <div class="eyebrow">MISSION 002 / THE DEAD RELAY</div>
+      <h1>NEON<br /><em>DRIFT.</em></h1>
+      <p>The city went quiet.<br />Something is still transmitting.</p>
+      <button id="enter" class="primary">ENTER DISTRICT <span>↗</span></button>
+      <details>
+        <summary>Controls & graphics</summary>
+        <p>WASD move · Mouse look · Shift run<br />E interact · Escape pause</p>
+        <label
+          >Graphics
+          <select id="quality">
+            <option value="low">Low</option>
+            <option value="medium" selected>Medium</option>
+            <option value="high">High</option>
+          </select></label
+        ><label
+          >World seed
+          <input id="seed" type="number" value="2049" step="1" /></label
+        ><button id="regenerate">Generate district</button
+        ><button id="restart">Restart position</button
+        ><button id="reset-scenario">Reset mystery &amp; journal</button
+        ><label
+          >Atmosphere volume<input
+            id="volume"
+            type="range"
+            min="0"
+            max="100"
+            value="25" /></label
+        ><button id="audio-toggle">Enable ambient audio</button
+        ><span id="save-status"></span>
+      </details>
+      <small id="notice">HEADPHONES OPTIONAL. CURIOSITY REQUIRED.</small>
+    </section>
+    <section
+      id="terminal"
+      class="terminal"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="terminal-title"
+      hidden
+    >
+      <div class="eyebrow">MUNICIPAL NETWORK / LOCAL RELAY</div>
+      <h2 id="terminal-title">GHOST / OS <span>v.0.7</span></h2>
+      <pre id="terminal-output" aria-live="polite"></pre>
+      <nav>
+        <button data-command="status">Status</button
+        ><button data-command="directory">Directory</button
+        ><button data-command="about">About</button
+        ><button data-command="exit">Exit</button>
+      </nav>
+      <form id="command-form">
+        <label for="command">guest@relay:~$</label
+        ><input
+          id="command"
+          autocomplete="off"
+          spellcheck="false"
+          placeholder="type a command"
+        />
+      </form>
+    </section>
+    <section
+      id="inspector"
+      class="terminal"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="inspect-title"
+      hidden
+    >
+      <div class="eyebrow">DISTRICT INFRASTRUCTURE / LOCAL ACCESS</div>
+      <h2 id="inspect-title"></h2>
+      <p id="inspect-body" aria-live="polite"></p>
+      <nav id="inspect-actions"></nav>
+      <button id="inspect-close">Return to street menu</button>
+    </section>
+    <section
+      id="journal"
+      class="terminal"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="journal-title"
+      hidden
+    >
+      <div class="eyebrow">FIELD NOTES / DISCOVERED INFORMATION</div>
+      <h2 id="journal-title">The Dead Relay</h2>
+      <ul id="journal-entries"></ul>
+      <button id="journal-close">Return to street menu</button>
+    </section>
+    <div id="error" role="alert" hidden></div>
+  </body>
+</html>
