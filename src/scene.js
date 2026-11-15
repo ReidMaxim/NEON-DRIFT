@@ -1,5 +1,6 @@
 import { grimeTexture } from "./living.js";
 import { scenarioLayout, inReservedArea } from "./scenario.js";
+import { intersects } from "./district.js";
 import * as T from "three";
 import { random } from "./world.js";
 export function buildScene(scene, world) {
@@ -200,6 +201,18 @@ export function buildScene(scene, world) {
   }
   for (const z of [7, -8, -27, -49]) {
     for (let j = 0; j < 4; j++) {
+      if (
+        world.config.tier >= 3 &&
+        world.city.roads
+          .slice(1)
+          .some((r) =>
+            intersects(
+              { minX: -half + 0.15, maxX: -half + 2, minZ: z - 1, maxZ: z + 3 },
+              r,
+            ),
+          )
+      )
+        continue;
       if (inReservedArea(layout, -half + 0.45 + j * 0.3, z + j * 0.4)) continue;
       box(
         -half + 0.45 + j * 0.3,
@@ -304,7 +317,14 @@ export function buildScene(scene, world) {
     const x = (rr() - 0.5) * world.config.streetWidth,
       y = rr() * 18,
       z = 18 - rr() * 90;
-    positions.set([x, y, z, x + 0.035, y, z], i * 6);
+    if (world.config.tier >= 3) {
+      const seg = world.city.roads[i % world.city.roads.length],
+        px = seg.minX + rr() * (seg.maxX - seg.minX),
+        pz = seg.minZ + rr() * (seg.maxZ - seg.minZ);
+      positions.set([px, y, pz, px + 0.035, y, pz], i * 6);
+    } else {
+      positions.set([x, y, z, x + 0.035, y, z], i * 6);
+    }
   }
   const rainGeo = new T.BufferGeometry();
   rainGeo.setAttribute("position", new T.BufferAttribute(positions, 3));

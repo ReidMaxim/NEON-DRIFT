@@ -1,3 +1,4 @@
+import { buildCity } from "./city-scene.js";
 import {
   createGame,
   saveGame,
@@ -32,9 +33,14 @@ try {
     `The district could not start. This experience requires WebGL2 and hardware acceleration. Try an updated desktop browser. Details: ${e.message}`;
 }
 async function start() {
+  const startup = performance.now();
   const params = new URLSearchParams(location.search),
     seed = Number(params.get("seed") ?? 2049),
-    world = generate({ seed });
+    world = generate({
+      seed,
+      tier: Number(params.get("tier") ?? 3),
+      identity: params.get("identity") || "mixed",
+    });
   let saved = null;
   try {
     saved = localStorage.getItem(
@@ -70,11 +76,14 @@ async function start() {
     composer = new EffectComposer(renderer);
   const living = buildLivingStreet(scene, world, game.layout),
     infrastructure = buildInfrastructure(scene, game);
+  const city = buildCity(scene, world);
   composer.addPass(new RenderPass(scene, camera));
   const bloom = new UnrealBloomPass(new T.Vector2(1, 1), 0.35, 0.65, 1.05);
   composer.addPass(bloom);
   composer.addPass(new OutputPass());
-  let quality = "medium",
+  let quality = ["low", "medium", "high"].includes(params.get("quality"))
+      ? params.get("quality")
+      : "medium",
     scale = 1,
     state = "menu",
     yaw = 0,
@@ -107,6 +116,7 @@ async function start() {
     camera.updateProjectionMatrix();
     bloom.enabled = p.bloom;
   };
+  $("quality").value = quality;
   resize();
   addEventListener("resize", resize);
   const showMenu = () => {
@@ -115,6 +125,8 @@ async function start() {
     document.exitPointerLock?.();
     $("menu").hidden = false;
     ui.hide();
+    $("laboratory").hidden = true;
+    diagnostics?.cancel?.();
     $("prompt").hidden = true;
     $("enter").focus();
   };
@@ -132,7 +144,8 @@ async function start() {
     if (document.pointerLockElement) {
       state = "play";
       $("menu").hidden = true;
-      $("terminal").hidden = true;
+      ui.hide();
+      $("laboratory").hidden = true;
       $("enter").textContent = "RESUME DISTRICT ↗";
     } else if (state === "play") showMenu();
   });
@@ -213,7 +226,7 @@ async function start() {
     }
     if (
       e.code === "Escape" &&
-      ["terminal", "inspect", "journal", "play", "tour"].includes(state)
+      ["terminal", "inspect", "journal", "play", "tour", "lab"].includes(state)
     )
       showMenu();
   });
@@ -240,6 +253,9 @@ async function start() {
   $("regenerate").onclick = () => {
     const n = Number($("seed").value);
     if (!Number.isFinite(n)) return;
+    params.set("tier", $("complexity").value);
+    params.set("identity", $("identity").value);
+    params.set("quality", quality);
     params.set("seed", Math.trunc(n));
     location.search = params.toString();
   };
@@ -261,35 +277,91 @@ async function start() {
   });
   $("world").addEventListener("webglcontextrestored", () => location.reload());
   let diagnostics = null;
-  if (import.meta.env.DEV) {
-    const { createDiagnostics } = await import("./tour.js");
-    diagnostics = createDiagnostics({
+  const labAvailable =
+    import.meta.env.DEV || import.meta.env.VITE_PREVIEW === "true";
+  $("complexity").value = world.config.tier;
+  $("identity").value = world.config.identity;
+  $("lab-button").hidden = !labAvailable;
+  const snapshot = () => ({
+    player: { ...player },
+    state,
+    yaw,
+    pitch,
+    game: JSON.parse(saveGame(game)),
+    audio: { enabled: audio.enabled, status: audio.status },
+  });
+  function pauseMode(mode) {
+    state = mode;
+    keys.clear();
+    document.exitPointerLock?.();
+    ui.hide();
+    $("menu").hidden = true;
+    $("prompt").hidden = true;
+    $("laboratory").hidden = true;
+  }
+  function openLab() {
+    pauseMode("lab");
+    $("laboratory").hidden = false;
+    $("lab-close").focus();
+  }
+  if (labAvailable) {
+    const { createLaboratory } = await import("./laboratory.js");
+    diagnostics = createLaboratory({
       camera,
       renderer,
+      scene,
       world,
-      hideUI() {
-        state = "tour";
-        $("menu").hidden = true;
-        $("terminal").hidden = true;
+      initMs: performance.now() - startup,
+      pause: pauseMode,
+      onComplete(report) {
+        $("lab-report").textContent = JSON.stringify(report, null, 2);
+        openLab();
       },
-      reset,
+      snapshot,
       quality: () => quality,
-      snapshot: () => ({
-        player: { ...player },
-        state,
-        yaw,
-        pitch,
-        game: JSON.parse(saveGame(game)),
-        audio: { enabled: audio.enabled, status: audio.status },
-      }),
+      cityStats: city.stats,
     });
-  }
+    window.neonLab = diagnostics;
+    if (import.meta.env.DEV) window.neonDev = diagnostics;
+    $("lab-button").onclick = openLab;
+    $("lab-close").onclick = showMenu;
+    $("lab-tour").onclick = () =>
+      diagnostics.start({
+        route: world.config.tier >= 3 ? "district" : "core",
+      });
+    $("lab-core").onclick = () => diagnostics.start();
+    $("stats-toggle").onchange = () =>
+      ($("performance").hidden = !$("stats-toggle").checked);
+    $("lab-metadata").textContent =
+      "MISSION 003 · " +
+      __BUILD_SHA__.slice(0, 8) +
+      " · Complexity " +
+      world.config.tier +
+      " / " +
+      quality;
+    for (let i = 0; i < diagnostics.poses.length; i++) {
+      const b = document.createElement("button");
+      b.textContent = diagnostics.poses[i].name;
+      b.onclick = () => diagnostics.pose(i);
+      $("lab-views").append(b);
+    }
+    addEventListener("keydown", (e) => {
+      if (
+        e.target instanceof HTMLInputElement ||
+        e.target instanceof HTMLSelectElement
+      )
+        return;
+      if (e.code === "KeyL") openLab();
+    });
+  } else $("lab-settings").hidden = true;
+  let statsAt = 0;
   function frame(now) {
     requestAnimationFrame(frame);
     const raw = last ? now - last : 16.67,
       dt = Math.min(raw / 1000, 0.05);
     last = now;
     if (document.hidden) return;
+    const updateStart = performance.now();
     elapsed += dt;
     if (state === "play") {
       let f = Number(keys.has("KeyW")) - Number(keys.has("KeyS")),
@@ -304,6 +376,7 @@ async function start() {
         (-f * Math.cos(yaw) - s * Math.sin(yaw)) * speed,
         boxes,
         world.bounds,
+        world.walkable,
       );
       camera.position.set(player.x, 1.72, player.z);
       camera.rotation.set(pitch, yaw, 0);
@@ -315,8 +388,28 @@ async function start() {
     visual.update(elapsed, camera, presets[quality]);
     living.update(elapsed, presets[quality]);
     infrastructure.update(elapsed);
+    city.update(elapsed, camera, presets[quality]);
     renderer.info.reset();
+    const updateMs = performance.now() - updateStart;
+    diagnostics?.beginGPU();
+    const renderStart = performance.now();
     composer.render();
+    diagnostics?.afterFrame(updateMs, performance.now() - renderStart);
+    if (now - statsAt > 500) {
+      statsAt = now;
+      $("performance").textContent =
+        "T" +
+        world.config.tier +
+        " / " +
+        quality +
+        " · " +
+        raw.toFixed(1) +
+        " ms · " +
+        renderer.info.render.calls +
+        " calls · " +
+        renderer.info.render.triangles +
+        " triangles";
+    }
     if (!diagnostics?.active && state === "play") {
       frameSum += raw;
       frames++;

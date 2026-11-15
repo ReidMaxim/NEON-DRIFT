@@ -1,4 +1,5 @@
 import * as T from "three";
+import { intersects } from "./district.js";
 import { random } from "./world.js";
 import { inReservedArea, powered } from "./scenario.js";
 export function grimeTexture() {
@@ -46,7 +47,18 @@ export function buildLivingStreet(scene, world, layout) {
   for (let z = 13; z > -66; z -= 7) {
     const side = r() > 0.5 ? 1 : -1,
       x = side * (half - 0.65);
-    if (inReservedArea(layout, x, z, 1)) continue;
+    if (
+      inReservedArea(layout, x, z, 1) ||
+      world.city.roads
+        .slice(1)
+        .some((road) =>
+          intersects(
+            { minX: x - 1, maxX: x + 1, minZ: z - 3, maxZ: z + 3 },
+            road,
+          ),
+        )
+    )
+      continue;
     add(geo, metal, x, 0.55, z, 0.9, 1.1, 1.65);
     add(geo, rust, x, 1.15, z, 1.05, 0.12, 1.85);
     for (let j = 0; j < 3; j++)

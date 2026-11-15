@@ -1,6 +1,16 @@
+import {
+  expandDistrict,
+  boundsOf,
+  withinRoads,
+  identities,
+} from "./district.js";
+import { random } from "./random.js";
+export { random } from "./random.js";
 import { scenarioLayout, inReservedArea } from "./scenario.js";
 export const defaults = Object.freeze({
   seed: 2049,
+  tier: 3,
+  identity: "mixed",
   density: 1,
   height: 1,
   streetWidth: 12,
@@ -9,15 +19,15 @@ export const defaults = Object.freeze({
   rain: 1,
   props: 1,
 });
-export function random(seed) {
-  let state = seed >>> 0;
-  return () => {
-    state = (Math.imul(state, 1664525) + 1013904223) >>> 0;
-    return state / 4294967296;
-  };
-}
 export function generate(config = {}) {
   const c = { ...defaults, ...config };
+  if (
+    !Number.isInteger(c.tier) ||
+    c.tier < 0 ||
+    c.tier > 4 ||
+    !(c.identity === "mixed" || c.identity in identities)
+  )
+    throw new Error("Invalid complexity tier or district identity");
   for (const k of [
     "seed",
     "density",
@@ -85,10 +95,17 @@ export function generate(config = {}) {
   };
   const layout = scenarioLayout(world);
   world.props = world.props.filter((p) => !inReservedArea(layout, p.x, p.z));
-  return world;
+  return expandDistrict(world);
 }
 export function colliders(world) {
   return [
+    ...(world.city?.buildings || []).map(boundsOf),
+    ...(world.city?.props || []).map((p) => ({
+      minX: p.x - p.w / 2,
+      maxX: p.x + p.w / 2,
+      minZ: p.z - p.d / 2,
+      maxZ: p.z + p.d / 2,
+    })),
     ...world.buildings.map((b) => ({
       minX: b.x - b.w / 2,
       maxX: b.x + b.w / 2,
@@ -109,12 +126,13 @@ export function colliders(world) {
     },
   ];
 }
-export function movePlayer(p, dx, dz, boxes, bounds) {
+export function movePlayer(p, dx, dz, boxes, bounds, walkable = null) {
   const steps = Math.max(1, Math.ceil(Math.hypot(dx, dz) / 0.15)),
     r = 0.28;
   for (let i = 0; i < steps; i++) {
     let x = Math.max(bounds.minX, Math.min(bounds.maxX, p.x + dx / steps));
     if (
+      (!walkable || withinRoads(x, p.z, walkable)) &&
       !boxes.some(
         (b) =>
           x > b.minX - r &&
@@ -126,6 +144,7 @@ export function movePlayer(p, dx, dz, boxes, bounds) {
       p.x = x;
     let z = Math.max(bounds.minZ, Math.min(bounds.maxZ, p.z + dz / steps));
     if (
+      (!walkable || withinRoads(p.x, z, walkable)) &&
       !boxes.some(
         (b) =>
           p.x > b.minX - r &&
