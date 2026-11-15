@@ -1,0 +1,18 @@
+{
+  "checkedAt": "2026-11-15T21:07:46.377Z",
+  "url": "https://reidmaxim.github.io/NEON-DRIFT/preview/",
+  "sha": "9408dc1105ee46eecea3625c69fe381bdbf796ee",
+  "meta": {
+    "sha": "9408dc1105ee46eecea3625c69fe381bdbf796ee",
+    "experimental": true
+  },
+  "browser": "157.0.4341.60",
+  "checks": [
+    "HTTP200 and no missing assets",
+    "Mission 003 banner and exact revision",
+    "World Lab and Tier3 default",
+    "Live benchmark completes and displays metrics",
+    "Hard refresh preserves current revision"
+  ],
+  "errors": []
+}
