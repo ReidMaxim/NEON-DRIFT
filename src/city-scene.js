@@ -1,3 +1,4 @@
+import { assemblyBounds, overlaps3 } from "./assemblies.js";
 import * as T from "three";
 import { identities, boundsOf, intersects } from "./district.js";
 import { random } from "./random.js";
@@ -6,6 +7,10 @@ import { scenarioLayout, inReservedArea } from "./scenario.js";
 export function buildCity(scene, world) {
   const tier = world.config.tier,
     layout = scenarioLayout(world);
+  const attachmentReservations = [
+    ...world.attachments.fans,
+    ...world.attachments.vents,
+  ].map((a) => assemblyBounds(a));
   if (!tier) return { update() {}, stats: { instances: 0, chunks: 0 } };
   const cube = new T.BoxGeometry(),
     cylinder = new T.CylinderGeometry(0.5, 0.5, 1, 12),
@@ -56,6 +61,24 @@ export function buildCity(scene, world) {
     rotation = 0,
   ) {
     if (y < 2.7 && inReservedArea(layout, x, z, 0.6)) return;
+    if (
+      (detail || (h < 1.5 && y < 3)) &&
+      attachmentReservations.some((a) =>
+        overlaps3(
+          a,
+          {
+            minX: x - w / 2,
+            maxX: x + w / 2,
+            minY: y - h / 2,
+            maxY: y + h / 2,
+            minZ: z - d / 2,
+            maxZ: z + d / 2,
+          },
+          0.035,
+        ),
+      )
+    )
+      return;
     const cx = Math.floor(x / 24),
       cz = Math.floor(z / 24),
       chunk = `${cx},${cz},${detail}`;
@@ -463,7 +486,7 @@ export function buildCity(scene, world) {
       transparent: true,
       depthWrite: false,
       uniforms: { time: { value: 0 } },
-      vertexShader: `uniform float time;varying float a;void main(){vec3 p=position;p.y=mod(p.y+time*.18,5.);p.x+=sin(time*.3+position.z)*.4;vec4 v=modelViewMatrix*vec4(p,1.);gl_Position=projectionMatrix*v;gl_PointSize=min(35.,140./max(2.,-v.z));a=.1*sin(p.y*.628);}`,
+      vertexShader: `uniform float time;varying float a;void main(){vec3 p=position;p.y+=sin(time*.18+position.x)*.12;p.x+=sin(time*.3+position.z)*.4;vec4 v=modelViewMatrix*vec4(p,1.);gl_Position=projectionMatrix*v;gl_PointSize=min(2.5,24./max(2.,-v.z));a=.18;}`,
       fragmentShader: `varying float a;void main(){gl_FragColor=vec4(.57,.71,.73,a*smoothstep(.5,.1,length(gl_PointCoord-.5)));}`,
     });
     scene.add(new T.Points(particleGeo, material));

@@ -1,3 +1,4 @@
+import { localToWorld, validateAssemblies } from "./assemblies.js";
 import * as T from "three";
 import { poses as original } from "./tour.js";
 import { worldMetrics } from "./district.js";
@@ -143,6 +144,24 @@ export function createLaboratory({
   }
   const api = {
     poses: viewpoints,
+    attachments: world.attachments,
+    attachmentValidation: () => validateAssemblies(world),
+    poseAttachment(kind, index = 0, angle = 0) {
+      cancel();
+      pause("tour");
+      const a = world.attachments[kind][index];
+      if (!a) throw new Error("No attachment at that index");
+      const fan = kind === "fans",
+        p = localToWorld(
+          a,
+          fan
+            ? [angle * 1.3, 0.15 + (angle === 2 ? 0.6 : 0), 2.4]
+            : [angle * 1.1, angle === 2 ? 2.8 : 1.25, angle === 2 ? 0.1 : 1.8],
+        ),
+        t = localToWorld(a, fan ? [0, 0, 0.25] : [0, 0.22, 0]);
+      camera.position.fromArray(p);
+      camera.lookAt(...t);
+    },
     snapshot,
     report,
     cancel,

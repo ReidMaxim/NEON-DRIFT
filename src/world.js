@@ -5,6 +5,7 @@ import {
   identities,
 } from "./district.js";
 import { random } from "./random.js";
+import { generateAssemblies, assemblyBounds } from "./assemblies.js";
 export { random } from "./random.js";
 import { scenarioLayout, inReservedArea } from "./scenario.js";
 export const defaults = Object.freeze({
@@ -95,10 +96,24 @@ export function generate(config = {}) {
   };
   const layout = scenarioLayout(world);
   world.props = world.props.filter((p) => !inReservedArea(layout, p.x, p.z));
-  return expandDistrict(world);
+  const expanded = expandDistrict(world);
+  expanded.attachments = generateAssemblies(expanded);
+  return expanded;
 }
 export function colliders(world) {
   return [
+    ...[
+      ...(world.attachments?.fans || []),
+      ...(world.attachments?.vents || []),
+      ...(world.attachments?.lamps || []),
+    ].map((a) =>
+      a.type === "lamp"
+        ? assemblyBounds({
+            ...a,
+            parts: a.parts.filter((p) => p.id === "pole"),
+          })
+        : assemblyBounds(a),
+    ),
     ...(world.city?.buildings || []).map(boundsOf),
     ...(world.city?.props || []).map((p) => ({
       minX: p.x - p.w / 2,
