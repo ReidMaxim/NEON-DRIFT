@@ -1,19 +1,10 @@
+import { validateCityLayers } from "./city-layers.js";
 import { localToWorld, validateAssemblies } from "./assemblies.js";
 import * as T from "three";
 import { poses as original } from "./tour.js";
 import { worldMetrics } from "./district.js";
-export const viewpoints = [
-  ...original.slice(0, 1),
-  { name: "commercial", p: [1, 1.72, -17], t: [-5, 3, -22] },
-  { name: "industrial", p: [-39, 1.72, -17], t: [-39, 5, -45] },
-  { name: "residential", p: [31, 1.72, -14], t: [31, 5, -44] },
-  { name: "abandoned", p: [17, 1.72, -57], t: [-30, 3, -57] },
-  { name: "intersection", p: [0, 1.72, -22], t: [-30, 4, -28] },
-  { name: "vertical", p: [-37, 2, -32], t: [-25, 24, -42] },
-  { name: "landmark", p: [-17, 1.72, -28], t: [-24, 12, -42] },
-  { name: "density", p: [37, 1.72, -28], t: [-25, 5, -28] },
-  { name: "playable-route", p: [0, 1.72, -40], t: [31, 2, -57] },
-];
+export { missionViews as viewpoints } from "./city-views.js";
+import { missionViews as viewpoints } from "./city-views.js";
 export function createLaboratory({
   camera,
   renderer,
@@ -103,7 +94,7 @@ export function createLaboratory({
   function report() {
     const debug = gl.getExtension("WEBGL_debug_renderer_info");
     return {
-      mission: 3,
+      mission: 4,
       revision: __BUILD_SHA__,
       browser: navigator.userAgent,
       gpu: debug
@@ -146,6 +137,13 @@ export function createLaboratory({
   const api = {
     poses: viewpoints,
     attachments: world.attachments,
+    layers: world.layers,
+    layerValidation: () => validateCityLayers(world),
+    stageExploration(x = 0, z = 13, heading = 0) {
+      cancel();
+      pause("menu");
+      stagePlayer(x, z, heading);
+    },
     stageSurfaceCrossing(index = 0, direction = 1) {
       cancel();
       pause("menu");
@@ -200,11 +198,11 @@ export function createLaboratory({
         options.route === "district"
           ? [
               viewpoints[0],
-              viewpoints[5],
               viewpoints[2],
-              viewpoints[7],
-              viewpoints[4],
               viewpoints[3],
+              viewpoints[8],
+              viewpoints[5],
+              viewpoints[4],
               viewpoints[9],
             ]
           : original;

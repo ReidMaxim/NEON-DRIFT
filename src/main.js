@@ -1,3 +1,4 @@
+import { buildLayers } from "./layer-scene.js";
 import { buildCity } from "./city-scene.js";
 import {
   createGame,
@@ -70,8 +71,9 @@ async function start() {
   const scene = new T.Scene();
   scene.background = new T.Color("#090e20");
   scene.fog = new T.FogExp2("#111b30", world.config.fog);
-  const camera = new T.PerspectiveCamera(67, 1, 0.08, 180);
+  const camera = new T.PerspectiveCamera(67, 1, 0.08, 240);
   camera.rotation.order = "YXZ";
+  const layers = buildLayers(scene, world);
   const visual = buildScene(scene, world),
     composer = new EffectComposer(renderer);
   const living = buildLivingStreet(scene, world, game.layout),
@@ -334,7 +336,7 @@ async function start() {
         showMenu();
       },
       quality: () => quality,
-      cityStats: city.stats,
+      cityStats: { ...city.stats, layers: layers.stats },
     });
     window.neonLab = diagnostics;
     if (import.meta.env.DEV) window.neonDev = diagnostics;
@@ -348,7 +350,7 @@ async function start() {
     $("stats-toggle").onchange = () =>
       ($("performance").hidden = !$("stats-toggle").checked);
     $("lab-metadata").textContent =
-      "MISSION 003 · " +
+      "MISSION 004 · " +
       __BUILD_SHA__.slice(0, 8) +
       " · Complexity " +
       world.config.tier +

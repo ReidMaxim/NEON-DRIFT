@@ -1,3 +1,4 @@
+import { sidewalkIntervals } from "./street-surfaces.js";
 import { grimeTexture } from "./living.js";
 import { scenarioLayout, inReservedArea } from "./scenario.js";
 import { intersects } from "./district.js";
@@ -67,7 +68,8 @@ export function buildScene(scene, world) {
   const half = world.config.streetWidth / 2;
   box(0, -0.17, -25, world.config.streetWidth + 18, 0.3, 100, dark);
   for (const side of [-1, 1]) {
-    box(side * (half - 0.65), 0.04, -25, 1.3, 0.12, 91, metal);
+    for (const [a, b] of sidewalkIntervals(world, side))
+      box(side * (half - 0.65), 0.04, (a + b) / 2, 1.3, 0.12, b - a, metal);
     for (let i = 0; i < 17; i++)
       if ((i + (side + 1)) % 5 !== 0)
         box(
@@ -185,14 +187,6 @@ export function buildScene(scene, world) {
         side < 0 ? "#ff64d4" : "#6affef",
       );
     }
-  }
-  // Distant skyline is deliberately offset, forming a recognizable layered crown.
-  for (let i = 0; i < 15; i++) {
-    const r = random(800 + i),
-      x = (i - 7) * 5,
-      h = 25 + r() * 40;
-    box(x, h / 2, -85 - r() * 15, 3 + r() * 4, h, 5, mats[i % 3]);
-    for (let y = 6; y < h; y += 4) box(x, y, -81, 1.6, 0.12, 0.1, neon[i % 2]);
   }
   box(2, 23, -67, 9, 46, 8, mats[0]);
   box(2, 48, -67, 5, 4, 5, mats[1]);

@@ -1,3 +1,4 @@
+import { streetTiles } from "./street-surfaces.js";
 import { assemblyBounds, overlaps3, surfacePlate } from "./assemblies.js";
 import * as T from "three";
 import { identities, boundsOf, intersects } from "./district.js";
@@ -13,7 +14,6 @@ export function buildCity(scene, world) {
   ].map((a) => assemblyBounds(a));
   if (!tier) return { update() {}, stats: { instances: 0, chunks: 0 } };
   const cube = new T.BoxGeometry(),
-    cylinder = new T.CylinderGeometry(0.5, 0.5, 1, 12),
     sphere = new T.IcosahedronGeometry(1, 1),
     batch = new Map(),
     chunks = new Map(),
@@ -99,43 +99,8 @@ export function buildCity(scene, world) {
     batch.get(key).items.push([x, y, z, w, h, d, rotation]);
     stats.instances++;
   }
-  const tags = {};
-  function signMaterial(id, customText = null) {
-    const key = id + ":" + (customText || "");
-    if (tags[key]) return tags[key];
-    const c = document.createElement("canvas");
-    c.width = 512;
-    c.height = 128;
-    const g = c.getContext("2d"),
-      p = identities[id];
-    g.fillStyle = "#09141d";
-    g.fillRect(0, 0, 512, 128);
-    g.strokeStyle = p.neon;
-    g.lineWidth = 5;
-    g.strokeRect(6, 6, 500, 116);
-    g.fillStyle = p.neon;
-    g.font = "bold 52px monospace";
-    g.textAlign = "center";
-    g.fillText(
-      customText ||
-        {
-          commercial: "NIGHT / MARKET",
-          industrial: "KILN / SERVICE",
-          residential: "HABITAT / 09",
-          abandoned: "SIGNAL / LOST",
-        }[id],
-      256,
-      82,
-    );
-    const texture = new T.CanvasTexture(c);
-    texture.colorSpace = T.SRGBColorSpace;
-    return (tags[key] = new T.MeshBasicMaterial({
-      map: texture,
-      side: T.DoubleSide,
-    }));
-  }
-  const signGeo = new T.PlaneGeometry(1, 1);
   function facade(b, core = false) {
+    if (!core) return; // Structural architecture is now composed by the shared layer adapter.
     const r = random(b.seed + 374),
       id = core
         ? world.config.identity === "mixed"
@@ -161,112 +126,6 @@ export function buildCity(scene, world) {
         geometry,
         detail,
       );
-    if (!core) {
-      add(b.x, b.h / 2, b.z, b.w, b.h, b.d, m.body);
-      add(b.x, b.h + 0.18, b.z, b.w + 0.4, 0.36, b.d + 0.4, m.trim);
-      if (b.variant % 2 === 0)
-        add(b.x, b.h + 2, b.z, b.w * 0.7, 3.7, b.d * 0.65, m.body);
-      if (b.variant === 1)
-        add(b.x, b.h + 1.4, b.z, b.w * 0.65, 2.6, b.d * 0.6, m.trim);
-      for (let y = 3; y < b.h - 1; y += 3) {
-        put(0, y, 0.1, width, 0.12, 0.2, m.trim);
-        for (let u = -width / 2 + 0.8; u < width / 2 - 0.5; u += 1.3) {
-          put(u, y + 1, 0.12, 0.75, 1.2, 0.1, r() > 0.42 ? m.glass : m.dark);
-          put(u, y + 1, 0.19, 0.82, 0.06, 0.06, m.trim, true);
-        }
-      }
-      put(0, 1.2, 0.13, 1.5, 2.4, 0.15, m.dark);
-      put(0, 2.5, 0.45, 2.2, 0.15, 0.8, m.trim);
-      put(0, 3, 0.2, width - 0.4, 0.45, 0.1, m.neon);
-      // Canvas lettering is instanced with orientation aligned to the facade.
-      const ry = vertical ? (-side * Math.PI) / 2 : side === 1 ? Math.PI : 0;
-      add(
-        fx + (vertical ? -side * 0.3 : 0),
-        4,
-        fz + (vertical ? 0 : -side * 0.3),
-        3,
-        0.75,
-        1,
-        signMaterial(id),
-        signGeo,
-        false,
-        ry,
-      );
-    }
-    if (!core) {
-      // Secondary faces use layered bands and inset windows rather than blank extrusion sides.
-      const crossWidth = vertical ? b.w : b.d;
-      for (const edge of [-1, 1]) {
-        const edgeX = b.x + (vertical ? 0 : (edge * b.w) / 2),
-          edgeZ = b.z + (vertical ? (edge * b.d) / 2 : 0);
-        for (let y = 2; y < b.h; y += 3.5) {
-          add(
-            edgeX,
-            y,
-            edgeZ,
-            vertical ? b.w : 0.12,
-            0.12,
-            vertical ? 0.12 : b.d,
-            m.trim,
-          );
-          for (
-            let u = -crossWidth / 2 + 0.8;
-            u < crossWidth / 2 - 0.5;
-            u += 1.7
-          ) {
-            const px = edgeX + (vertical ? u : edge * 0.07),
-              pz = edgeZ + (vertical ? edge * 0.07 : u);
-            add(
-              px,
-              y + 1,
-              pz,
-              vertical ? 0.65 : 0.1,
-              1,
-              vertical ? 0.1 : 0.65,
-              r() > 0.58 ? m.glass : m.dark,
-              cube,
-              true,
-            );
-          }
-        }
-        add(
-          edgeX + (vertical ? 0 : edge * 0.15),
-          2,
-          edgeZ + (vertical ? edge * 0.15 : 0),
-          vertical ? 1.3 : 0.2,
-          3.5,
-          vertical ? 0.2 : 1.3,
-          m.trim,
-        );
-      }
-      if (id === "residential") {
-        put(0, 1.5, 0.22, 2, 2.6, 0.12, m.trim);
-        put(0, 1.4, 0.32, 1.5, 2.2, 0.12, m.dark);
-        for (let i = 0; i < 3; i++)
-          put(-1 + i, 2.2, 0.45, 0.45, 0.6, 0.35, i % 2 ? m.trim : rust, true);
-        for (let y = 5; y < b.h - 2; y += 5) {
-          for (let i = 0; i < 3; i++)
-            put(-1 + i, y + 0.3, 1.3, 0.4, 0.4, 0.35, trash, true);
-        }
-      }
-      if (id === "abandoned") {
-        for (let u = -width * 0.4; u < width * 0.5; u += 1.1) {
-          put(u, 2, 0.35, 0.9, 0.18, 0.18, rust);
-          put(u, 2.8, 0.36, 0.9, 0.18, 0.18, m.trim);
-        }
-        for (let i = 0; i < 6; i++)
-          put(
-            (r() - 0.5) * width,
-            0.2 + r() * 2,
-            0.5,
-            0.08,
-            1.2,
-            0.15,
-            rust,
-            true,
-          );
-      }
-    }
     // Building grammar: depth ribs, meters, service doors, boxed AC, drain runs and abstract paint.
     for (let u = -width / 2 + 0.3; u < width / 2; u += 2.3) {
       put(u, 2.2, 0.22, 0.12, 4.4, 0.26, m.trim, true);
@@ -324,14 +183,23 @@ export function buildCity(scene, world) {
         add(b.x - 1 + i, b.h + 2, b.z + 1, 0.6, 2, 0.7, m.trim);
   }
   for (const b of world.buildings) facade(b, true);
-  for (const b of world.city.buildings) facade(b);
   if (tier >= 3) {
+    for (const t of streetTiles(world))
+      add(
+        (t.minX + t.maxX) / 2,
+        t.height - 0.11,
+        (t.minZ + t.maxZ) / 2,
+        t.maxX - t.minX,
+        0.22,
+        t.maxZ - t.minZ,
+        road,
+      );
     for (const seg of world.city.roads.slice(1)) {
       const vertical = seg.x1 === seg.x2,
         length = vertical ? seg.maxZ - seg.minZ : seg.maxX - seg.minX,
         cx = (seg.minX + seg.maxX) / 2,
         cz = (seg.minZ + seg.maxZ) / 2;
-      add(cx, -0.12, cz, seg.maxX - seg.minX, 0.22, seg.maxZ - seg.minZ, road);
+
       const m = materials[seg.identity];
       for (const side of [-1, 1])
         for (let t = -length / 2 + 2; t < length / 2 - 1; t += 4) {
@@ -357,7 +225,7 @@ export function buildCity(scene, world) {
             vertical ? 2.7 : 0.08,
             m.neon,
           );
-          add(x, 0.14, z, vertical ? 0.3 : 3, 0.28, vertical ? 3 : 0.3, m.trim);
+          add(x, 0.062, z, vertical ? 0.3 : 3, 0.1, vertical ? 3 : 0.3, m.trim);
         }
       for (let t = -length / 2 + 4; t < length / 2; t += 8)
         add(
@@ -369,57 +237,6 @@ export function buildCity(scene, world) {
           vertical ? 1.6 : 0.12,
           paper,
         );
-    }
-    // Fixed navigation signs and an original cooling-array landmark visible from the junction.
-    const m = materials.industrial,
-      l = world.city.landmark;
-    add(l.x, 6, l.z, 8, 12, 8, m.body, cylinder);
-    add(l.x, 13, l.z, 9, 2, 9, m.trim, cylinder);
-    add(l.x, 14.2, l.z, 8.5, 0.14, 8.5, m.neon, cylinder);
-    for (const dx of [-2.8, 2.8])
-      add(l.x + dx, 6, l.z + 3, 0.18, 11, 0.2, m.trim);
-    add(l.x, 8, l.z + 4.05, 6, 1.4, 1, signMaterial("industrial"), signGeo);
-    for (let i = 0; i < 4; i++)
-      add(
-        l.x - 2 + i * 1.4,
-        17 + (i % 2),
-        l.z,
-        0.12,
-        7 + (i % 2),
-        0.12,
-        m.neon,
-      );
-    add(-39, 8, -42, 15, 0.5, 3, m.trim);
-    add(-39, 9, -40.5, 15, 0.1, 0.1, m.neon);
-    add(-38, 20, -39, 19, 0.7, 2.4, m.trim);
-    add(-38, 20.6, -37.8, 19, 0.08, 0.08, m.neon);
-    for (const x of [-47.2, -28.8]) add(x, 10, -39, 0.6, 20, 0.7, m.trim);
-    for (const x of [-46.1, -31.9]) add(x, 4, -42, 0.5, 8, 0.6, m.trim);
-    add(
-      9,
-      2.8,
-      -51,
-      3.5,
-      0.8,
-      1,
-      signMaterial("residential", "HABITAT →"),
-      signGeo,
-    );
-    add(
-      -9,
-      2.8,
-      -22,
-      3.5,
-      0.8,
-      1,
-      signMaterial("industrial", "← KILN"),
-      signGeo,
-    );
-    // Clearly closed maintenance gantries: no implied playable stairs.
-    for (const b of world.city.buildings
-      .filter((b) => b.identity === "industrial")
-      .slice(0, tier === 4 ? 8 : 3)) {
-      add(b.x, 4, b.z, b.w + 1, 0.25, b.d + 1, m.trim);
     }
   }
   const propList = [...world.city.props];

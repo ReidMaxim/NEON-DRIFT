@@ -10,6 +10,7 @@ import {
   generateSurfaceDecorations,
   assemblyBounds,
 } from "./assemblies.js";
+import { generateCityLayers } from "./city-layers.js";
 export { random } from "./random.js";
 import { scenarioLayout, inReservedArea } from "./scenario.js";
 export const defaults = Object.freeze({
@@ -101,12 +102,14 @@ export function generate(config = {}) {
   const layout = scenarioLayout(world);
   world.props = world.props.filter((p) => !inReservedArea(layout, p.x, p.z));
   const expanded = expandDistrict(world);
+  expanded.layers = generateCityLayers(expanded);
   expanded.attachments = generateAssemblies(expanded);
   expanded.surfaceDecorations = generateSurfaceDecorations(expanded);
   return expanded;
 }
 export function colliders(world) {
   return [
+    ...(world.layers?.solids || []),
     ...[
       ...(world.attachments?.fans || []),
       ...(world.attachments?.vents || []),

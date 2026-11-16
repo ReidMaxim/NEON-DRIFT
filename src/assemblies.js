@@ -1,3 +1,4 @@
+import { sidewalkIntervals, streetHeight } from "./street-surfaces.js";
 import { random } from "./random.js";
 import { boundsOf, intersects } from "./district.js";
 import {
@@ -66,10 +67,13 @@ export function terrainHeightAt(world, x, z) {
     z >= -70.5 &&
     z <= 20.5
   )
-    heights.push(0.1);
+    if (
+      sidewalkIntervals(world, Math.sign(x)).some(([a, b]) => z >= a && z <= b)
+    )
+      heights.push(0.1);
   for (const road of world.city.roads.slice(1))
     if (x >= road.minX && x <= road.maxX && z >= road.minZ && z <= road.maxZ)
-      heights.push(-0.01);
+      heights.push(streetHeight);
   return heights.length ? Math.max(...heights) : null;
 }
 const box = (id, position, size, material = "metal") => ({
@@ -188,6 +192,7 @@ export function placementObstacles(world) {
       maxY: s.height,
       hostId: s.id,
     }));
+  out.push(...(world.layers?.solids || []));
   for (const p of [...world.props, ...world.city.props])
     out.push({
       minX: p.x - p.w / 2,
