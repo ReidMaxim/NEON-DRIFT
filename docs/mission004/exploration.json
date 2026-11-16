@@ -1,0 +1,86 @@
+{
+  "browser": "157.0.4341.60",
+  "headed": true,
+  "cases": [
+    {
+      "seed": 2049,
+      "tier": 3,
+      "revision": "543110cd0878497908ff1cb485f779e92687e246",
+      "landmarks": [
+        "cooling",
+        "residential",
+        "terminus"
+      ],
+      "checks": [
+        "keyboard loop through all three landmarks and return",
+        "visible closed northern boundary blocks movement",
+        "Escape menu"
+      ],
+      "boundary": {
+        "x": -4.470083281567743e-16,
+        "z": 18
+      },
+      "errors": []
+    },
+    {
+      "seed": 2049,
+      "tier": 4,
+      "revision": "543110cd0878497908ff1cb485f779e92687e246",
+      "landmarks": [
+        "cooling",
+        "residential",
+        "terminus"
+      ],
+      "checks": [
+        "keyboard loop through all three landmarks and return",
+        "visible closed northern boundary blocks movement",
+        "Escape menu"
+      ],
+      "boundary": {
+        "x": -4.468981099448526e-16,
+        "z": 18
+      },
+      "errors": []
+    },
+    {
+      "seed": 8128,
+      "tier": 3,
+      "revision": "543110cd0878497908ff1cb485f779e92687e246",
+      "landmarks": [
+        "cooling",
+        "residential",
+        "terminus"
+      ],
+      "checks": [
+        "keyboard loop through all three landmarks and return",
+        "visible closed northern boundary blocks movement",
+        "Escape menu"
+      ],
+      "boundary": {
+        "x": -4.470083281567744e-16,
+        "z": 18
+      },
+      "errors": []
+    },
+    {
+      "seed": 8128,
+      "tier": 4,
+      "revision": "543110cd0878497908ff1cb485f779e92687e246",
+      "landmarks": [
+        "cooling",
+        "residential",
+        "terminus"
+      ],
+      "checks": [
+        "keyboard loop through all three landmarks and return",
+        "visible closed northern boundary blocks movement",
+        "Escape menu"
+      ],
+      "boundary": {
+        "x": -4.408361082890734e-16,
+        "z": 18
+      },
+      "errors": []
+    }
+  ]
+}

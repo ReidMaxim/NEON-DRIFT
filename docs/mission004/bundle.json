@@ -1,0 +1,36 @@
+{
+  "files": [
+    {
+      "path": "dist/assets/city-layers-8rr-REQN.js",
+      "bytes": 39532,
+      "gzip": 15803
+    },
+    {
+      "path": "dist/assets/index-G1bFVp5A.css",
+      "bytes": 5734,
+      "gzip": 1932
+    },
+    {
+      "path": "dist/assets/index-JYoGDc_W.js",
+      "bytes": 565538,
+      "gzip": 148380
+    },
+    {
+      "path": "dist/assets/laboratory-_6C3DQjt.js",
+      "bytes": 5324,
+      "gzip": 2652
+    },
+    {
+      "path": "dist/index.html",
+      "bytes": 7325,
+      "gzip": 2773
+    },
+    {
+      "path": "dist/THIRD_PARTY_NOTICES.txt",
+      "bytes": 1081,
+      "gzip": 667
+    }
+  ],
+  "total": 624534,
+  "gzip": 172207
+}

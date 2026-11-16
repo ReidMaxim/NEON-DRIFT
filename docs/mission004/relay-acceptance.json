@@ -1,0 +1,13 @@
+{
+  "checks": [
+    "Tier 3, seed 2049: network solution, clue, reward and saved completion",
+    "Keyboard traversal of expanded loop and journal",
+    "Audio activation/mute, graphics presets, seed/tier/identity regeneration",
+    "Tier 4, seed 8128: physical solution, clue, reward and saved completion",
+    "Keyboard traversal of expanded loop and journal",
+    "Audio activation/mute, graphics presets, seed/tier/identity regeneration",
+    "Narrow touch-screen fallback"
+  ],
+  "errors": [],
+  "browser": "157.0.4341.60"
+}
