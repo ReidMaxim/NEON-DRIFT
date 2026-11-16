@@ -1,3 +1,4 @@
+import { streetTiles } from "./street-surfaces.js";
 import * as T from "three";
 import { familyPalette } from "./city-layers.js";
 
@@ -81,18 +82,28 @@ export function buildLayers(scene, world) {
     groups.push(mesh);
     instances += b.parts.length;
   }
-  // The underlay extends beyond all visible routes; the navigation union still bounds players.
-  const e = model.envelope,
-    floor = new T.Mesh(
-      new T.PlaneGeometry(e.maxX - e.minX + 220, 300),
-      new T.MeshStandardMaterial({
-        color: "#23313b",
-        roughness: 0.95,
-        metalness: 0.15,
-      }),
+  // These exact cells are the physical site's permitted ground, not a background underlay.
+  const groundMaterial = new T.ShaderMaterial({
+    uniforms: { time: { value: 0 } },
+    vertexShader: `varying vec3 wp;void main(){wp=(modelMatrix*instanceMatrix*vec4(position,1.)).xyz;gl_Position=projectionMatrix*viewMatrix*vec4(wp,1.);}`,
+    fragmentShader: `varying vec3 wp;uniform float time;float hash(vec2 p){return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453);}void main(){vec2 p=wp.xz;float noise=hash(floor(p*vec2(24.,48.)));float wet=.3+noise*.5;float ripple=.85+.15*sin(p.y*14.+sin(p.x*3.)+time*1.5);vec3 c=vec3(.028,.043,.06);float amber=exp(-pow((p.x+39.)*.22,2.))*exp(-abs(p.y+37.)*.035);float violet=exp(-pow((p.x-31.)*.3,2.))*exp(-abs(p.y+34.)*.04);float green=exp(-pow((p.y+57.)*.4,2.));float pink=exp(-pow((p.y+28.)*.35,2.));c+=(amber*vec3(.28,.13,.025)+violet*vec3(.08,.08,.25)+green*vec3(.055,.12,.07)+pink*vec3(.16,.025,.1))*wet*ripple;float f=1.-exp(-pow(length(cameraPosition-wp)*.025,2.));gl_FragColor=vec4(mix(c,vec3(.025,.038,.075),f),1.);}`,
+  });
+  const tiles = streetTiles(world),
+    floor = new T.InstancedMesh(box, groundMaterial, tiles.length);
+  tiles.forEach((t, i) => {
+    dummy.position.set(
+      (t.minX + t.maxX) / 2,
+      t.height - 0.06,
+      (t.minZ + t.maxZ) / 2,
     );
-  floor.rotation.x = -Math.PI / 2;
-  floor.position.set((e.minX + e.maxX) / 2, -0.025, -25);
+    dummy.rotation.set(0, 0, 0);
+    dummy.scale.set(t.maxX - t.minX, 0.12, t.maxZ - t.minZ);
+    dummy.updateMatrix();
+    floor.setMatrixAt(i, dummy.matrix);
+  });
+  floor.name = "paved-site";
+  floor.userData.surfaceTiles = tiles;
+  floor.computeBoundingSphere();
   scene.add(floor);
   if (model.labels.length) {
     const canvas = document.createElement("canvas");
@@ -147,6 +158,8 @@ export function buildLayers(scene, world) {
   }
   return {
     stats: { instances, batches: batch.size, skyline: model.skyline.length },
-    update() {},
+    update(time) {
+      groundMaterial.uniforms.time.value = time;
+    },
   };
 }

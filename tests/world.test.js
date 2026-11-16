@@ -42,7 +42,7 @@ test("district bounds contain long movement", () => {
   const w = generate(),
     p = { x: 0, z: 13 };
   movePlayer(p, 0, 500, colliders(w), w.bounds);
-  assert.equal(p.z, w.bounds.maxZ);
+  assert.ok(p.z < w.bounds.maxZ && p.z > w.bounds.maxZ - 0.6);
 });
 test("terminal exposes working commands and exit", () => {
   assert.match(terminalCommand(" STATUS "), /ONLINE/);

@@ -102,7 +102,11 @@ try {
       await page.keyboard.press("Escape");
       await page.waitForFunction(() => !document.pointerLockElement);
       await expect(page.locator("#menu")).toBeVisible();
-      await page.evaluate(() => neonLab.stageExploration(0, 17, Math.PI));
+      const maxZ = await page.evaluate(() => neonLab.site.bounds.maxZ);
+      await page.evaluate(
+        (z) => neonLab.stageExploration(0, z - 1.3, Math.PI),
+        maxZ,
+      );
       await page.locator("#enter").click();
       await page.waitForFunction(
         () =>
@@ -113,8 +117,8 @@ try {
       await page.waitForTimeout(1200);
       await page.keyboard.up("KeyW");
       const boundary = (await state()).player;
-      expect(boundary.z).toBeLessThan(18.35);
-      expect(boundary.z).toBeGreaterThan(17.2);
+      expect(boundary.z).toBeGreaterThan(maxZ - 1);
+      expect(boundary.z).toBeLessThan(maxZ - 0.2);
       expect(errors).toEqual([]);
       cases.push({
         seed,

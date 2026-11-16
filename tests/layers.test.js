@@ -160,7 +160,7 @@ test("render adapter retains nonzero instance colors without requiring absent ve
     assert.ok(view.stats.batches < 45);
     const color = new T.Color();
     scene.traverse((o) => {
-      if (o.isInstancedMesh) {
+      if (o.isInstancedMesh && o.name !== "paved-site") {
         assert.equal(o.material.vertexColors, false);
         assert.ok(o.instanceColor);
         o.getColorAt(0, color);

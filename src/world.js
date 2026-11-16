@@ -1,3 +1,4 @@
+import { buildSite } from "./site.js";
 import {
   expandDistrict,
   boundsOf,
@@ -102,6 +103,9 @@ export function generate(config = {}) {
   const layout = scenarioLayout(world);
   world.props = world.props.filter((p) => !inReservedArea(layout, p.x, p.z));
   const expanded = expandDistrict(world);
+  expanded.site = buildSite(expanded);
+  expanded.bounds = { ...expanded.site.bounds };
+  expanded.walkable = [{ ...expanded.site.bounds, id: "paved-site" }];
   expanded.layers = generateCityLayers(expanded);
   expanded.attachments = generateAssemblies(expanded);
   expanded.surfaceDecorations = generateSurfaceDecorations(expanded);

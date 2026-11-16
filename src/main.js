@@ -406,6 +406,7 @@ async function start() {
     living.update(elapsed, presets[quality]);
     infrastructure.update(elapsed);
     city.update(elapsed, camera, presets[quality]);
+    layers.update(elapsed);
     renderer.info.reset();
     const updateMs = performance.now() - updateStart;
     diagnostics?.beginGPU();

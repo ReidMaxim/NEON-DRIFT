@@ -1,4 +1,3 @@
-import { streetTiles } from "./street-surfaces.js";
 import { assemblyBounds, overlaps3, surfacePlate } from "./assemblies.js";
 import * as T from "three";
 import { identities, boundsOf, intersects } from "./district.js";
@@ -39,12 +38,7 @@ export function buildCity(scene, world) {
         color: new T.Color(c.neon).multiplyScalar(1.4),
       }),
     };
-  const road = new T.ShaderMaterial({
-      uniforms: { time: { value: 0 } },
-      vertexShader: `varying vec3 wp;void main(){wp=(modelMatrix*instanceMatrix*vec4(position,1.)).xyz;gl_Position=projectionMatrix*viewMatrix*vec4(wp,1.);}`,
-      fragmentShader: `varying vec3 wp;uniform float time;float hash(vec2 p){return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453);}void main(){vec2 p=wp.xz;float noise=hash(floor(p*vec2(24.,48.)));float wet=.3+noise*.5;float ripple=.85+.15*sin(p.y*14.+sin(p.x*3.)+time*1.5);vec3 c=vec3(.028,.043,.06);float amber=exp(-pow((p.x+39.)*.22,2.))*exp(-abs(p.y+37.)*.035);float violet=exp(-pow((p.x-31.)*.3,2.))*exp(-abs(p.y+34.)*.04);float green=exp(-pow((p.y+57.)*.4,2.));float pink=exp(-pow((p.y+28.)*.35,2.));c+=(amber*vec3(.28,.13,.025)+violet*vec3(.08,.08,.25)+green*vec3(.055,.12,.07)+pink*vec3(.16,.025,.1))*wet*ripple;float f=1.-exp(-pow(length(cameraPosition-wp)*.025,2.));gl_FragColor=vec4(mix(c,vec3(.025,.038,.075),f),1.);}`,
-    }),
-    wear = surface("#58615f"),
+  const wear = surface("#58615f"),
     rust = surface("#4b3d32"),
     trash = surface("#121e23"),
     paper = surface("#868375");
@@ -184,16 +178,6 @@ export function buildCity(scene, world) {
   }
   for (const b of world.buildings) facade(b, true);
   if (tier >= 3) {
-    for (const t of streetTiles(world))
-      add(
-        (t.minX + t.maxX) / 2,
-        t.height - 0.11,
-        (t.minZ + t.maxZ) / 2,
-        t.maxX - t.minX,
-        0.22,
-        t.maxZ - t.minZ,
-        road,
-      );
     for (const seg of world.city.roads.slice(1)) {
       const vertical = seg.x1 === seg.x2,
         length = vertical ? seg.maxZ - seg.minZ : seg.maxX - seg.minX,
@@ -344,7 +328,6 @@ export function buildCity(scene, world) {
   return {
     stats,
     update(time, camera, preset) {
-      road.uniforms.time.value = time;
       for (const group of chunks.values()) {
         if (!group.userData.detail) continue;
         const d = Math.hypot(

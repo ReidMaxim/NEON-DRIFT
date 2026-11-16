@@ -59,6 +59,15 @@ export function localToWorld(root, p) {
 export function terrainHeightAt(world, x, z) {
   const half = world.config.streetWidth / 2,
     heights = [];
+  const site = world.site?.bounds;
+  if (
+    site &&
+    x >= site.minX &&
+    x <= site.maxX &&
+    z >= site.minZ &&
+    z <= site.maxZ
+  )
+    heights.push(streetHeight);
   if (Math.abs(x) <= half + 9 && z >= -75 && z <= 25) heights.push(-0.02);
   if (Math.abs(x) <= half - 1.4 && z >= -72 && z <= 22) heights.push(0.012);
   if (

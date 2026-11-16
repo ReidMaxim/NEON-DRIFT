@@ -36,6 +36,7 @@ try {
   expect(report.revision).toBe(sha);
   expect(report.world.tier).toBe(3);
   expect(await page.evaluate(() => neonLab.layerValidation())).toEqual([]);
+  expect(await page.evaluate(() => neonLab.siteValidation())).toEqual([]);
   expect(await page.evaluate(() => neonLab.attachmentValidation())).toEqual([]);
   expect(await page.evaluate(() => neonLab.layers.landmarks.length)).toBe(3);
   await page.screenshot({ path: out + "/live-preview.png" });

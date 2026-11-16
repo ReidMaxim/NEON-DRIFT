@@ -1,3 +1,4 @@
+import { validateSite } from "./site.js";
 import { validateCityLayers } from "./city-layers.js";
 import { localToWorld, validateAssemblies } from "./assemblies.js";
 import * as T from "three";
@@ -138,6 +139,8 @@ export function createLaboratory({
     poses: viewpoints,
     attachments: world.attachments,
     layers: world.layers,
+    site: world.site,
+    siteValidation: () => validateSite(world),
     layerValidation: () => validateCityLayers(world),
     stageExploration(x = 0, z = 13, heading = 0) {
       cancel();

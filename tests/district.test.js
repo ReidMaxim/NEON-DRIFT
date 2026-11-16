@@ -20,12 +20,17 @@ test("Tier 0 preserves exact Mission 002 core geometry and scenario placement", 
     {
       buildings: w.buildings,
       props: w.props,
-      bounds: w.bounds,
       terminal: w.terminal,
     },
-    fixture,
+    {
+      buildings: fixture.buildings,
+      props: fixture.props,
+      terminal: fixture.terminal,
+    },
   );
   assert.equal(w.city.buildings.length, 0);
+  // The integration correction intentionally replaces the old invisible road-only limit.
+  assert.deepEqual(w.bounds, w.site.bounds);
 });
 test("all tiers reproduce and appearance/prop edits do not alter street topology", () => {
   for (let tier = 0; tier < 5; tier++) {

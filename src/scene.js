@@ -66,7 +66,6 @@ export function buildScene(scene, world) {
     return m;
   };
   const half = world.config.streetWidth / 2;
-  box(0, -0.17, -25, world.config.streetWidth + 18, 0.3, 100, dark);
   for (const side of [-1, 1]) {
     for (const [a, b] of sidewalkIntervals(world, side))
       box(side * (half - 0.65), 0.04, (a + b) / 2, 1.3, 0.12, b - a, metal);
@@ -291,11 +290,21 @@ export function buildScene(scene, world) {
     fragmentShader: `varying vec3 wp; uniform float time; uniform float fogDensity; float hash(vec2 p){return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453);} void main(){vec2 p=wp.xz;float n=hash(floor(p*vec2(32.,65.)));float puddle=smoothstep(.15,.6,sin(p.x*1.7+sin(p.y*.3))*sin(p.y*.7));n=mix(n,.25,puddle*.85);float ripple=sin(p.y*18.+sin(p.x*4.)+time*2.)*.5+.5;vec3 c=vec3(.018,.028,.045);float a=exp(-pow((p.x+3.4)*.8,2.))*exp(-abs(p.y+4.)*.10);float b=exp(-pow((p.x-3.8)*.9,2.))*exp(-abs(p.y+16.)*.08);float d=exp(-pow((p.x+3.8)*1.1,2.))*exp(-abs(p.y-2.)*.18);c+=(vec3(.95,.035,.47)*a+vec3(.02,.46,.7)*b+vec3(.04,.7,.49)*d)*(.08+n*.55)*(.8+ripple*.2);float f=1.-exp(-pow(length(cameraPosition-wp)*fogDensity,2.));gl_FragColor=vec4(mix(c,vec3(.025,.038,.075),f),1.);}`,
   });
   const road = new T.Mesh(
-    new T.PlaneGeometry(world.config.streetWidth - 2.8, 94),
+    new T.PlaneGeometry(
+      world.config.streetWidth - 2.8,
+      Math.min(22, world.site.bounds.maxZ) -
+        Math.max(-72, world.site.bounds.minZ),
+    ),
     roadMat,
   );
   road.rotation.x = -Math.PI / 2;
-  road.position.set(0, 0.012, -25);
+  road.position.set(
+    0,
+    0.012,
+    (Math.min(22, world.site.bounds.maxZ) +
+      Math.max(-72, world.site.bounds.minZ)) /
+      2,
+  );
   scene.add(road);
 
   const markings = new T.InstancedMesh(geo, metal, 14),
