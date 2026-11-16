@@ -1,3 +1,4 @@
+import { intersects } from "../src/district.js";
 import * as T from "three";
 import { buildLayers } from "../src/layer-scene.js";
 import test from "node:test";
@@ -5,7 +6,11 @@ import assert from "node:assert/strict";
 import { generate, colliders, movePlayer } from "../src/world.js";
 import { validateSite } from "../src/site.js";
 import { streetTiles } from "../src/street-surfaces.js";
-import { terrainHeightAt } from "../src/assemblies.js";
+import {
+  terrainHeightAt,
+  assemblyBounds,
+  overlaps3,
+} from "../src/assemblies.js";
 import { auditSite } from "./support/site-audit.js";
 
 test("visible paved coverage and navigation have one bounded deterministic source across every tier", () => {
@@ -17,6 +22,7 @@ test("visible paved coverage and navigation have one bounded deterministic sourc
         half = w.config.streetWidth / 2 - 1.4;
       assert.deepEqual(validateSite(w), []);
       assert.deepEqual(w.site, generate({ seed, tier }).site);
+      assert.equal(terrainHeightAt(w, b.minX - 1, 0), null);
       const owned = half * 2 * (Math.min(22, b.maxZ) - Math.max(-72, b.minZ));
       assert.ok(
         Math.abs(
@@ -165,4 +171,19 @@ test("rendered ground matrices and enclosure instances match the physical layout
   } finally {
     globalThis.document = previous;
   }
+});
+
+test("repair patches do not stack on each other or cross solid enclosure footings", () => {
+  for (const seed of [0, 42, 2049, 8128])
+    for (let tier = 0; tier < 5; tier++) {
+      const w = generate({ seed, tier }),
+        patches = w.surfaceDecorations.map((p) => assemblyBounds(p));
+      for (let i = 0; i < patches.length; i++) {
+        for (let j = 0; j < i; j++)
+          assert.ok(!intersects(patches[i], patches[j], 0.03));
+        assert.ok(
+          !w.layers.solids.some((b) => overlaps3(patches[i], b, 0.005)),
+        );
+      }
+    }
 });

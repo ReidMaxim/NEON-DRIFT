@@ -237,7 +237,7 @@ export function buildSite(world) {
     put(
       "yard-entry-header",
       [-34 + shift, height + 3.15, -42],
-      [0.4, 0.5, 6.4],
+      [0.4, 0.2, 6.4],
       "industrial",
       1,
       { support: "yard-entry-post--45", owner: "cooling-yard" },
