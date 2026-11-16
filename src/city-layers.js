@@ -75,6 +75,10 @@ export function buildingGrammar(b, id, family, core = false) {
             ? 0.025
             : 0.06;
   if (!core) {
+    put("foundation", 0, -0.015, -d / 2, w + 0.6, 0.03, d + 0.6, 1, {
+      surface: true,
+      support: "ground",
+    });
     put("podium", 0, podium / 2, -d / 2, w, podium, d, 0, {
       role: "body",
       collision: "solid",
@@ -867,7 +871,7 @@ export function generateCityLayers(world) {
       if (roads.some((v) => intersects(boundsOf(b), v, 10))) continue;
       const id = `sky-${layer}-${i}`;
       skyline.push({ id, ...b, family, background: true });
-      put(id, [x, h / 2 - 0.17, z], [w, h, d], family, 0, {
+      put(id, [x, h * 0.31 - 0.17, z], [w, h * 0.62, d], family, 0, {
         background: true,
         distant: true,
         support: "ground",
@@ -883,7 +887,7 @@ export function generateCityLayers(world) {
       put(`${id}-crown`, [x, h + 0.83, z], [w * 0.65, 2, d * 0.65], family, 1, {
         background: true,
         distant: true,
-        support: id,
+        support: `${id}-upper`,
       });
       if (i % 4 === 0)
         put(`${id}-mast`, [x, h + 4, z], [0.16, 6, 0.16], family, 1, {

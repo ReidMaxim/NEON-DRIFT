@@ -104,12 +104,17 @@ try {
       await expect(page.locator("#menu")).toBeVisible();
       await page.evaluate(() => neonLab.stageExploration(0, 17, Math.PI));
       await page.locator("#enter").click();
-      await page.waitForFunction(() => document.pointerLockElement);
+      await page.waitForFunction(
+        () =>
+          document.pointerLockElement && neonLab.snapshot().state === "play",
+      );
+      await page.waitForTimeout(150);
       await page.keyboard.down("KeyW");
       await page.waitForTimeout(1200);
       await page.keyboard.up("KeyW");
       const boundary = (await state()).player;
       expect(boundary.z).toBeLessThan(18.35);
+      expect(boundary.z).toBeGreaterThan(17.2);
       expect(errors).toEqual([]);
       cases.push({
         seed,

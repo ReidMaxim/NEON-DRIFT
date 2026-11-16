@@ -134,7 +134,7 @@ test("families have different structural signatures and supported local transfor
     assert.ok(recipes[i].parts.some((p) => p.id.includes(prefix)));
   for (const a of recipes)
     for (const p of a.parts) {
-      assert.equal(p.support, "host");
+      assert.equal(p.support, p.id.endsWith(":foundation") ? "ground" : "host");
       assert.ok(p.position.every(Number.isFinite));
     }
   const w = generate(),
