@@ -172,3 +172,35 @@ test("render adapter retains nonzero instance colors without requiring absent ve
     globalThis.document = saved;
   }
 });
+
+test("setback service brackets touch host mass and low fronts stay below their podium", () => {
+  for (const h of [4.5, 6, 9, 20])
+    for (const vertical of [false, true])
+      for (const side of [-1, 1]) {
+        const b = { x: 20, z: -40, w: 7, d: 8, h, side, vertical, seed: 2049 };
+        const industrial = buildingGrammar(b, "host", "industrial");
+        const bodies = industrial.parts
+          .filter((p) => p.role === "body")
+          .map(partBounds);
+        for (const p of industrial.parts.filter((p) =>
+          p.id.includes("platform-bracket"),
+        )) {
+          const q = partBounds(p);
+          assert.ok(
+            bodies.some(
+              (a) => intersects(a, q) && q.minY < a.maxY && q.maxY > a.minY,
+            ),
+          );
+        }
+        if (h < 7.2)
+          assert.ok(
+            !industrial.parts.some((p) => p.id.endsWith(":service-platform")),
+          );
+        const domestic = buildingGrammar(b, "host", "residential"),
+          podium = domestic.parts.find((p) => p.id.endsWith(":podium"));
+        for (const p of domestic.parts.filter((p) =>
+          p.id.includes("domestic-reveal"),
+        ))
+          assert.ok(partBounds(p).maxY <= partBounds(podium).maxY + 0.001);
+      }
+});

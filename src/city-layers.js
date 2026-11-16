@@ -65,7 +65,7 @@ export function buildingGrammar(b, id, family, core = false) {
         { hostId: id, support: id, ...options },
       ),
     );
-  const podium = Math.min(6, b.h * 0.4),
+  const podium = b.h < 8 ? Math.min(4, b.h - 0.6) : Math.min(6, b.h * 0.4),
     inset =
       family === "commercial"
         ? 0.12
@@ -196,7 +196,16 @@ export function buildingGrammar(b, id, family, core = false) {
     put("roof-setback", 0, b.h + 1.6, -d / 2, w * 0.53, 2.8, d * 0.55, 0);
   } else if (family === "industrial") {
     for (const u of [-w * 0.43, w * 0.43])
-      put(`column-${u}`, u, podium / 2 + 0.2, 0.13, 0.45, podium + 0.4, 0.5, 1);
+      put(
+        `column-${u}`,
+        u,
+        Math.min(4.4, b.h) / 2,
+        0.13,
+        0.45,
+        Math.min(4.4, b.h),
+        0.5,
+        1,
+      );
     put("loading-shutter", 0, 1.8, 0.1, w * 0.62, 3.6, 0.2, 2);
     for (let y = 0.4; y < 3.5; y += 0.4)
       put(`shutter-slat-${y}`, 0, y, 0.23, w * 0.59, 0.06, 0.08, 1);
@@ -205,15 +214,17 @@ export function buildingGrammar(b, id, family, core = false) {
       put(`roof-stack-${u}`, u, b.h + 1.3, -d * 0.52, 0.7, 2.6, 0.7, 1);
       put(`stack-collar-${u}`, u, b.h + 2.55, -d * 0.52, 1, 0.2, 1, 2);
     }
-    put("service-platform", 0, 5.4, 0.5, w * 0.8, 0.22, 1.1, 1);
-    for (const u of [-w * 0.3, w * 0.3])
-      put(`platform-bracket-${u}`, u, 5, 0.2, 0.22, 0.7, 0.5, 1);
-    put("platform-rail", 0, 6.25, 1.02, w * 0.8, 0.09, 0.08, 1);
-    for (const u of [-w * 0.38, 0, w * 0.38])
-      put(`rail-stanchion-${u}`, u, 5.85, 1.02, 0.08, 0.9, 0.08, 1);
+    if (b.h >= 7.2) {
+      put("service-platform", 0, 5.4, front + 0.5, w * 0.8, 0.22, 1.1, 1);
+      for (const u of [-w * 0.3, w * 0.3])
+        put(`platform-bracket-${u}`, u, 5, front + 0.2, 0.22, 0.7, 0.5, 1);
+      put("platform-rail", 0, 6.25, front + 1.02, w * 0.8, 0.09, 0.08, 1);
+      for (const u of [-w * 0.38, 0, w * 0.38])
+        put(`rail-stanchion-${u}`, u, 5.85, front + 1.02, 0.08, 0.9, 0.08, 1);
+    }
   } else if (family === "residential") {
     for (const u of [0, w * 0.3])
-      for (const y of [1.8, 4.2]) {
+      for (const y of [1.8, 4.2].filter((y) => y + 0.8 <= podium)) {
         put(`domestic-reveal-${u}-${y}`, u, y, 0.055, 1.65, 1.6, 0.13, 2);
         put(`domestic-window-${u}-${y}`, u, y, 0.135, 1.35, 1.3, 0.025, 3, {
           glow: y < 3,
