@@ -109,3 +109,7 @@ The expanded tiers trade a small background/silhouette cost for fewer fragmented
 The normal production-mode candidate also passed base-path hard refresh, missing-asset/external-request checks, absence of development hooks, context-loss messaging and unsupported-WebGL2 messaging. [Candidate checks](mission004/production-candidate.json). This validates build compatibility; it does not deploy the candidate to the stable URL.
 
 Current live publication and draft-PR verification are recorded in the Mission 004 pull request and the delivered publication evidence after deployment. The report's measured runtime revision is retained above so subsequent evidence-only commits do not obscure what was benchmarked.
+
+## Human-playtest integration follow-up
+
+The [Mission 004 integration correction](MISSION_004_INTEGRATION.md) supersedes this release's visual-only ground underlay, road-only movement limits and isolated road-cap gates. It preserves the architectural families and gameplay, while adding surface/navigation agreement and enclosure testing.

@@ -1,19 +1,21 @@
-# World continuity — Mission 004
+# World continuity — current Mission 004 integration model
 
-The finite street graph remains the navigation authority. Two small additions improve places rather than raw scale: a cooling-yard spur and a short utility apron. Existing connections and the Dead Relay scenario remain intact. The original core building/prop fixture still passes at Tier 0; Tier 0 visuals now also receive the continuity layer.
+The current contract is **one bounded physical paved site**, not a road-only walking union beneath a much larger visual ground plane. See [root causes, corrections, tests and evidence](MISSION_004_INTEGRATION.md). The earlier [Mission 004 report](MISSION_004_REPORT.md) and its measurements describe the original City of Layers release; its underlay/navigation and isolated-road-cap behavior is superseded here.
 
-## Constructed boundaries and background
+## Shared surface ownership
 
-Unconnected street endpoints receive grounded closed gates, posts, headers, bars and warning strips, with solid gate proxies. Road continuations and distant masses can appear beyond them. Continuations are rejected when another active loop occupies that space. The existing 07 tower now has a collider matching its visible footprint; it is not a decorative tower players can enter through.
+`site.js` derives the site footprint from built roads, buildings, reserved landmarks and archive geometry with two meters of service clearance. `street-surfaces.js` partitions that rectangle into non-overlapping floor cells and excludes the separately rendered original wet-road rectangle. Movement permissions use exactly the site footprint. Solid obstacles remain independent. All open parcel/service pavement is now traversable, while the perimeter is a visible collidable wall/gate assembly.
 
-Two seeded rings of stepped building masses surround the map envelope. Family vocabulary follows broad neighborhood direction or the chosen identity override. Inward-facing selective window bands, crowns, antennas, and a supported transit viaduct/train create depth. Background descriptors do not produce player collision, and tests reject their intersection with road envelopes. They use shared geometry and a small number of coarse batches. A Lambert background material uses reduced fog depth (0.55×) so silhouettes remain legible behind the near city's normal fog. This is art-directed distance fog, not volumetric atmosphere.
+The support-height resolver uses the same site height and original sidewalk intervals. Road/pavement height is .012 and original sidewalk height is .1. Grates, emitters, repair patches and thin covers remain source/height aligned. The original broad underlay and redundant base are removed. No apparent off-road paving depends on an invisible road-union clamp.
 
-An extended low ground underlay and shallow building foundation strips replace visibly disconnected peripheral bases. The sky is not an infinite city, and the player cannot travel to background architecture. Gaps between parcels and the finite road union remain a limitation; no off-road exploration system is claimed.
+## Enclosures and landmarks
 
-## Streets and transitions
+Every closed boundary gate belongs to the continuous perimeter. Walls, gate panels, posts, headers and registered collision derive from one enclosure model. The cooling yard has an open service entrance and connected side/return walls. The utility frontage has wing walls attached to its building. The residential forecourt is reached over continuous pavement. At wide street settings the entire cooling assembly and reserved parcel shift together to preserve pedestrian clearance.
 
-`street-surfaces.js` subtracts cross-street intervals from the original raised sidewalks. It decomposes the road union into non-overlapping tiles, excluding the rectangle already owned by the original wet-road shader. Expanded streets meet the original road at Y=.012, eliminating the old 2.2 cm junction difference. Curbs are lower, with breaks at crossings; restrained crosswalk stripes divide oversized surfaces. Existing family transitions follow the cross-street from industrial west to residential east, with the lower abandoned connector providing a clear change of vocabulary.
+Background-only masses remain outside the physical site, with layered silhouettes, selected windows and supported transit beyond the perimeter. Whole-host rejection prevents detached crowns when a mass would intrude. These unreachable structures do not supply player collision or imply an open route through the perimeter.
 
-The support-height resolver uses these same sidewalk intervals and road heights. Grates remain within 4 mm of pavement and have no player-blocking collider. Their source-relative emitters, repair patches, utility plates and reserved crossing strips remain validated. No new terrain elevation or step-climbing physics is introduced. Street shading remains an economical analytic approximation, with some material contrast between the original and expanded road surfaces.
+## Validation and limits
 
-Tests cover deterministic generation, connected road graphs, non-overlapping pavement tiles, intersection support heights, background exclusion, visible end barriers and physical landmark access across representative seeds and extreme proportions. AABBs and known reservations are conservative; they do not prove triangle-exact clearance for every fragment or mathematical coverage of every possible seed.
+Tests cover visible floor area versus navigation, actual renderer transforms, perimeter coverage, gate/return completeness, controller parcel crossings, fixture traversal, connected sampled free space, landmarks and both relay solutions. Keyboard-driven browser acceptance complements geometry assertions. See the integration report for exact configurations, raw results and live publication evidence.
+
+The city remains finite and mostly axis aligned. AABBs, a fixed eye height and artistic fog/reflections are retained. Closed rooms, balconies, transit and gantries are scenery, with no decorative stairs suggesting unsupported vertical access. Side/rear service ground is intentionally simpler than the authored street fronts; coherence takes priority over adding objects.

@@ -1,0 +1,11 @@
+{
+  "checks": [
+    "Production repository base route and hard refresh",
+    "No missing assets or external runtime requests",
+    "Development hooks absent",
+    "Context-loss explanation",
+    "Unsupported-WebGL2 explanation"
+  ],
+  "errors": [],
+  "external": []
+}

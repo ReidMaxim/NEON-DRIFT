@@ -1,0 +1,47 @@
+{
+  "source": "e1fa47f",
+  "target": "151ac9c420af146096883e5c0af996d983fcca01",
+  "cases": [
+    {
+      "seed": 2049,
+      "tier": 0
+    },
+    {
+      "seed": 2049,
+      "tier": 1
+    },
+    {
+      "seed": 2049,
+      "tier": 2
+    },
+    {
+      "seed": 2049,
+      "tier": 3
+    },
+    {
+      "seed": 2049,
+      "tier": 4
+    },
+    {
+      "seed": 8128,
+      "tier": 0
+    },
+    {
+      "seed": 8128,
+      "tier": 1
+    },
+    {
+      "seed": 8128,
+      "tier": 2
+    },
+    {
+      "seed": 8128,
+      "tier": 3
+    },
+    {
+      "seed": 8128,
+      "tier": 4
+    }
+  ],
+  "equal": true
+}

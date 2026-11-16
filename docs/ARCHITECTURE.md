@@ -59,3 +59,5 @@ See [world generation](WORLD_GENERATION.md), [rendering optimization](RENDERING_
 Surface fixtures carry explicit surface collision classification, use supporting pavement height, and never enter the solid assembly collider list. Repair patches are generated in world.surfaceDecorations. See [surface fixture correction](SURFACE_FIXTURES.md).
 
 Mission 004 adds pure city-layers.js and street-surfaces.js descriptors, adapted through layer-scene.js. Ordinary architecture, background scenery, landmark solids and surface decorations have distinct roles; the gameplay and save model stays unchanged. See [Mission 004](MISSION_004_REPORT.md).
+
+Mission 004 integration: site.js now owns the finite paved/nav footprint and complete perimeter/yard enclosures. Road descriptors guide composition rather than restricting all walking. Ground rendering and support height queries consume the same footprint. See [integration correction](MISSION_004_INTEGRATION.md).

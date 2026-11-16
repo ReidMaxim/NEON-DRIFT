@@ -1,0 +1,86 @@
+{
+  "browser": "157.0.4341.60",
+  "headed": true,
+  "cases": [
+    {
+      "seed": 2049,
+      "tier": 3,
+      "revision": "e1fa47f7231db69868e68dace38f9858ed3215dd",
+      "landmarks": [
+        "cooling",
+        "residential",
+        "terminus"
+      ],
+      "checks": [
+        "keyboard loop through all three landmarks and return",
+        "visible closed northern boundary blocks movement",
+        "Escape menu"
+      ],
+      "boundary": {
+        "x": -4.470083281567742e-16,
+        "z": 21.200799999999987
+      },
+      "errors": []
+    },
+    {
+      "seed": 2049,
+      "tier": 4,
+      "revision": "e1fa47f7231db69868e68dace38f9858ed3215dd",
+      "landmarks": [
+        "cooling",
+        "residential",
+        "terminus"
+      ],
+      "checks": [
+        "keyboard loop through all three landmarks and return",
+        "visible closed northern boundary blocks movement",
+        "Escape menu"
+      ],
+      "boundary": {
+        "x": -4.470450675607482e-16,
+        "z": 21.200799999999983
+      },
+      "errors": []
+    },
+    {
+      "seed": 8128,
+      "tier": 3,
+      "revision": "e1fa47f7231db69868e68dace38f9858ed3215dd",
+      "landmarks": [
+        "cooling",
+        "residential",
+        "terminus"
+      ],
+      "checks": [
+        "keyboard loop through all three landmarks and return",
+        "visible closed northern boundary blocks movement",
+        "Escape menu"
+      ],
+      "boundary": {
+        "x": -4.468246311369048e-16,
+        "z": 21.199899999999996
+      },
+      "errors": []
+    },
+    {
+      "seed": 8128,
+      "tier": 4,
+      "revision": "e1fa47f7231db69868e68dace38f9858ed3215dd",
+      "landmarks": [
+        "cooling",
+        "residential",
+        "terminus"
+      ],
+      "checks": [
+        "keyboard loop through all three landmarks and return",
+        "visible closed northern boundary blocks movement",
+        "Escape menu"
+      ],
+      "boundary": {
+        "x": -4.40872847693047e-16,
+        "z": 21.1999
+      },
+      "errors": []
+    }
+  ]
+}

@@ -13,3 +13,7 @@ The cooling yard is entered from the industrial street around X=−39/Z=−42. I
 Landmark approach routes are serialized in the model for repeatable testing. Tests walk them using the normal radius-expanded collision controller, including 144 seed/tier/width/density/height combinations. Browser acceptance then follows a continuous keyboard loop through the yard, lower connector, terminus and residential frontage and returns to the original street. A separate visible gate test approaches an actual navigation boundary.
 
 Every label has a backing; the three labels share one texture atlas and draw. Cooling-bank fans use complete housing/guard/fastener parts with backplates on the service cabinet plane. Original animated fans and steam sources retain their existing assembly system. Static scenery does not imply accessible upper platforms; no stairs were added.
+
+## Integration follow-up
+
+The [integration correction](MISSION_004_INTEGRATION.md) connects the yard and utility frontage through explicit wall/entrance assemblies. For street widths above 12, the cooling reservation, road endpoint, machinery and enclosure shift west together by (streetWidth−12)/2 meters to avoid pinched space beside original buildings. Default-coordinate rows above remain valid at width 12. Landmark labels and the service-gate label share the existing atlas.
