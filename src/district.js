@@ -107,6 +107,27 @@ export function expandDistrict(world) {
       road("return", 31, -53, 64, -53, 8, "residential"),
     );
   }
+  // Fixed corridors with seed-selected landmark modules; no decorative RNG can reroute them.
+  const yardShiftX = -Math.max(0, (world.config.streetWidth - 12) / 2);
+  const landmarkReservations =
+    tier >= 3
+      ? [
+          {
+            id: "cooling",
+            minX: -34 + yardShiftX,
+            maxX: -18 + yardShiftX,
+            minZ: -50,
+            maxZ: -34,
+          },
+          { id: "residential", minX: 19, maxX: 26.6, minZ: -52, maxZ: -38 },
+          { id: "terminus", minX: 24, maxX: 38, minZ: -71, maxZ: -61.2 },
+        ]
+      : [];
+  if (tier >= 3)
+    roads.push(
+      road("yard", -39, -42, -20 + yardShiftX, -42, 12, "industrial"),
+      road("terminus", 31, -57, 31, -64, 10, "abandoned"),
+    );
   const other = roads.slice(1);
   world.buildings = world.buildings.filter(
     (b) => !other.some((r) => intersects(boundsOf(b), r, 0.6)),
@@ -123,10 +144,7 @@ export function expandDistrict(world) {
   );
   const buildings = [],
     props = [],
-    occupied = [
-      ...world.buildings.map(boundsOf),
-      { minX: -29, maxX: -19, minZ: -47, maxZ: -37 },
-    ],
+    occupied = [...world.buildings.map(boundsOf), ...landmarkReservations],
     r = random(world.config.seed + 17011);
   for (const seg of other) {
     const vertical = seg.x1 === seg.x2,
@@ -182,10 +200,12 @@ export function expandDistrict(world) {
   }
   world.city = {
     roads,
+    landmarkReservations,
+    yardShiftX,
     graph: streetGraph(roads),
     buildings,
     props,
-    landmark: { x: -24, z: -42 },
+    landmark: { x: -24 + yardShiftX, z: -42 },
     tier,
     identity: world.config.identity,
   };
@@ -214,6 +234,11 @@ export function worldMetrics(world) {
   return {
     tier: world.config.tier,
     seed: world.config.seed,
+    landmarks: world.layers?.landmarks.length || 0,
+    backgroundMasses: world.layers?.skyline.length || 0,
+    architecturalFamilies: [
+      ...new Set((world.layers?.architecture || []).map((a) => a.family)),
+    ],
     streetEnvelope: { width: maxX - minX, length: maxZ - minZ },
     streetSurfaceAreaM2: area,
     buildings: all.length,

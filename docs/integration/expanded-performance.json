@@ -1,0 +1,517 @@
+{
+  "browser": "157.0.4341.60",
+  "rows": [
+    {
+      "seed": 2049,
+      "tier": 3,
+      "errors": [],
+      "mission": 4,
+      "revision": "151ac9c420af146096883e5c0af996d983fcca01",
+      "browser": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/157.0.0.0 Safari/537.36 Edg/157.0.0.0",
+      "gpu": "ANGLE (NVIDIA, NVIDIA GeForce GTX 1050 Ti (0x00001C8C) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+      "viewport": [
+        1920,
+        1080
+      ],
+      "drawingBuffer": [
+        1920,
+        1080
+      ],
+      "quality": "high",
+      "world": {
+        "tier": 3,
+        "seed": 2049,
+        "landmarks": 3,
+        "backgroundMasses": 92,
+        "architecturalFamilies": [
+          "commercial",
+          "industrial",
+          "residential",
+          "abandoned"
+        ],
+        "streetEnvelope": {
+          "width": 95,
+          "length": 87.69999999999999
+        },
+        "streetSurfaceAreaM2": 3652,
+        "buildings": 32,
+        "generatedProps": 38,
+        "streetSegments": 7,
+        "identities": [
+          "commercial",
+          "industrial",
+          "residential",
+          "abandoned"
+        ],
+        "modules": 24
+      },
+      "city": {
+        "instances": 786,
+        "chunks": 30,
+        "layers": {
+          "instances": 2422,
+          "batches": 23,
+          "skyline": 92
+        }
+      },
+      "route": "district",
+      "durationSeconds": 16,
+      "warmupSeconds": 3,
+      "initMs": 266.2000000476837,
+      "frameIntervalsMs": {
+        "samples": 781,
+        "mean": 16.667221811761014,
+        "median": 16.700000762939453,
+        "p95": 17,
+        "p99": 17,
+        "max": 17.100000381469727,
+        "spikesOver33ms": 0
+      },
+      "cpuUpdateMs": {
+        "samples": 781,
+        "mean": 0.051600503860454096,
+        "median": 0,
+        "p95": 0.10000014305114746,
+        "p99": 0.20000004768371582,
+        "max": 0.2999999523162842,
+        "spikesOver33ms": 0
+      },
+      "cpuRenderSubmissionMs": {
+        "samples": 781,
+        "mean": 1.549935981345085,
+        "median": 1.5,
+        "p95": 2.1000001430511475,
+        "p99": 2.5,
+        "max": 4.699999809265137,
+        "spikesOver33ms": 0
+      },
+      "gpuElapsedMs": {
+        "samples": 781,
+        "mean": 4.148436363636364,
+        "median": 4.1472,
+        "p95": 5.095424,
+        "p99": 5.675008,
+        "max": 6.232064,
+        "spikesOver33ms": 0
+      },
+      "gpuTimerSupported": true,
+      "drawCalls": {
+        "samples": 781,
+        "mean": 120.79641485275287,
+        "median": 125,
+        "p95": 182,
+        "p99": 195,
+        "max": 200
+      },
+      "triangles": {
+        "samples": 781,
+        "mean": 54692.50704225352,
+        "median": 56598,
+        "p95": 63644,
+        "p99": 64900,
+        "max": 65308
+      },
+      "resources": {
+        "geometries": 55,
+        "textures": 31,
+        "sceneGeometryObjects": 56,
+        "sceneTextures": 20,
+        "geometryAndInstanceArrayBytes": 559540,
+        "textureRGBA8EstimateBytes": 9437183.999999998,
+        "note": "CPU attribute storage and RGBA8 texture approximation; excludes render targets, driver allocation, program memory. Not total VRAM."
+      },
+      "heap": {
+        "used": 13559806,
+        "total": 20712714
+      },
+      "notes": [
+        "Frame intervals may be synchronized to display cadence and do not demonstrate spare GPU capacity.",
+        "CPU update excludes render submission; GPU query results are asynchronous and discarded during disjoint events."
+      ]
+    },
+    {
+      "seed": 2049,
+      "tier": 4,
+      "errors": [],
+      "mission": 4,
+      "revision": "151ac9c420af146096883e5c0af996d983fcca01",
+      "browser": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/157.0.0.0 Safari/537.36 Edg/157.0.0.0",
+      "gpu": "ANGLE (NVIDIA, NVIDIA GeForce GTX 1050 Ti (0x00001C8C) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+      "viewport": [
+        1920,
+        1080
+      ],
+      "drawingBuffer": [
+        1920,
+        1080
+      ],
+      "quality": "high",
+      "world": {
+        "tier": 4,
+        "seed": 2049,
+        "landmarks": 3,
+        "backgroundMasses": 88,
+        "architecturalFamilies": [
+          "commercial",
+          "industrial",
+          "residential",
+          "abandoned"
+        ],
+        "streetEnvelope": {
+          "width": 114,
+          "length": 87.69999999999999
+        },
+        "streetSurfaceAreaM2": 4426,
+        "buildings": 41,
+        "generatedProps": 47,
+        "streetSegments": 10,
+        "identities": [
+          "commercial",
+          "industrial",
+          "residential",
+          "abandoned"
+        ],
+        "modules": 24
+      },
+      "city": {
+        "instances": 1715,
+        "chunks": 39,
+        "layers": {
+          "instances": 3105,
+          "batches": 27,
+          "skyline": 88
+        }
+      },
+      "route": "district",
+      "durationSeconds": 16,
+      "warmupSeconds": 3,
+      "initMs": 158,
+      "frameIntervalsMs": {
+        "samples": 781,
+        "mean": 16.666709706969513,
+        "median": 16.700000762939453,
+        "p95": 17,
+        "p99": 17.100000381469727,
+        "max": 17.200000762939453,
+        "spikesOver33ms": 0
+      },
+      "cpuUpdateMs": {
+        "samples": 781,
+        "mean": 0.054033286745508564,
+        "median": 0,
+        "p95": 0.10000014305114746,
+        "p99": 0.20000004768371582,
+        "max": 0.3000001907348633,
+        "spikesOver33ms": 0
+      },
+      "cpuRenderSubmissionMs": {
+        "samples": 781,
+        "mean": 1.639948787518256,
+        "median": 1.5999999046325684,
+        "p95": 2.299999952316284,
+        "p99": 2.6000001430511475,
+        "max": 4.900000095367432,
+        "spikesOver33ms": 0
+      },
+      "gpuElapsedMs": {
+        "samples": 781,
+        "mean": 4.868736163892447,
+        "median": 4.694048,
+        "p95": 6.918208,
+        "p99": 8.136704,
+        "max": 9.00912,
+        "spikesOver33ms": 0
+      },
+      "gpuTimerSupported": true,
+      "drawCalls": {
+        "samples": 781,
+        "mean": 136.70422535211267,
+        "median": 140,
+        "p95": 217,
+        "p99": 231,
+        "max": 236
+      },
+      "triangles": {
+        "samples": 781,
+        "mean": 72041.20358514725,
+        "median": 73168,
+        "p95": 90128,
+        "p99": 92920,
+        "max": 93556
+      },
+      "resources": {
+        "geometries": 55,
+        "textures": 31,
+        "sceneGeometryObjects": 56,
+        "sceneTextures": 20,
+        "geometryAndInstanceArrayBytes": 680928,
+        "textureRGBA8EstimateBytes": 9437183.999999998,
+        "note": "CPU attribute storage and RGBA8 texture approximation; excludes render targets, driver allocation, program memory. Not total VRAM."
+      },
+      "heap": {
+        "used": 17995922,
+        "total": 30009142
+      },
+      "notes": [
+        "Frame intervals may be synchronized to display cadence and do not demonstrate spare GPU capacity.",
+        "CPU update excludes render submission; GPU query results are asynchronous and discarded during disjoint events."
+      ]
+    },
+    {
+      "seed": 8128,
+      "tier": 3,
+      "errors": [],
+      "mission": 4,
+      "revision": "151ac9c420af146096883e5c0af996d983fcca01",
+      "browser": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/157.0.0.0 Safari/537.36 Edg/157.0.0.0",
+      "gpu": "ANGLE (NVIDIA, NVIDIA GeForce GTX 1050 Ti (0x00001C8C) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+      "viewport": [
+        1920,
+        1080
+      ],
+      "drawingBuffer": [
+        1920,
+        1080
+      ],
+      "quality": "high",
+      "world": {
+        "tier": 3,
+        "seed": 8128,
+        "landmarks": 3,
+        "backgroundMasses": 94,
+        "architecturalFamilies": [
+          "commercial",
+          "industrial",
+          "residential",
+          "abandoned"
+        ],
+        "streetEnvelope": {
+          "width": 95,
+          "length": 87.69999999999999
+        },
+        "streetSurfaceAreaM2": 3652,
+        "buildings": 28,
+        "generatedProps": 33,
+        "streetSegments": 7,
+        "identities": [
+          "commercial",
+          "industrial",
+          "residential",
+          "abandoned"
+        ],
+        "modules": 24
+      },
+      "city": {
+        "instances": 766,
+        "chunks": 30,
+        "layers": {
+          "instances": 2214,
+          "batches": 24,
+          "skyline": 94
+        }
+      },
+      "route": "district",
+      "durationSeconds": 16,
+      "warmupSeconds": 3,
+      "initMs": 144.40000009536743,
+      "frameIntervalsMs": {
+        "samples": 781,
+        "mean": 16.666965766691824,
+        "median": 16.700000762939453,
+        "p95": 16.899999618530273,
+        "p99": 17.100000381469727,
+        "max": 19.5,
+        "spikesOver33ms": 0
+      },
+      "cpuUpdateMs": {
+        "samples": 781,
+        "mean": 0.049167736239073064,
+        "median": 0,
+        "p95": 0.10000014305114746,
+        "p99": 0.20000004768371582,
+        "max": 0.2999999523162842,
+        "spikesOver33ms": 0
+      },
+      "cpuRenderSubmissionMs": {
+        "samples": 781,
+        "mean": 1.5577464781405832,
+        "median": 1.5999999046325684,
+        "p95": 2.1000001430511475,
+        "p99": 2.5999999046325684,
+        "max": 4.5,
+        "spikesOver33ms": 0
+      },
+      "gpuElapsedMs": {
+        "samples": 781,
+        "mean": 4.885681003841228,
+        "median": 4.773952,
+        "p95": 6.6488,
+        "p99": 7.631872,
+        "max": 9.166816,
+        "spikesOver33ms": 0
+      },
+      "gpuTimerSupported": true,
+      "drawCalls": {
+        "samples": 781,
+        "mean": 120.36491677336748,
+        "median": 125,
+        "p95": 181,
+        "p99": 195,
+        "max": 197
+      },
+      "triangles": {
+        "samples": 781,
+        "mean": 53823.387964148525,
+        "median": 55530,
+        "p95": 62194,
+        "p99": 63078,
+        "max": 63186
+      },
+      "resources": {
+        "geometries": 53,
+        "textures": 33,
+        "sceneGeometryObjects": 55,
+        "sceneTextures": 22,
+        "geometryAndInstanceArrayBytes": 537612,
+        "textureRGBA8EstimateBytes": 10136234.666666666,
+        "note": "CPU attribute storage and RGBA8 texture approximation; excludes render targets, driver allocation, program memory. Not total VRAM."
+      },
+      "heap": {
+        "used": 11113969,
+        "total": 21215077
+      },
+      "notes": [
+        "Frame intervals may be synchronized to display cadence and do not demonstrate spare GPU capacity.",
+        "CPU update excludes render submission; GPU query results are asynchronous and discarded during disjoint events."
+      ]
+    },
+    {
+      "seed": 8128,
+      "tier": 4,
+      "errors": [],
+      "mission": 4,
+      "revision": "151ac9c420af146096883e5c0af996d983fcca01",
+      "browser": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/157.0.0.0 Safari/537.36 Edg/157.0.0.0",
+      "gpu": "ANGLE (NVIDIA, NVIDIA GeForce GTX 1050 Ti (0x00001C8C) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+      "viewport": [
+        1920,
+        1080
+      ],
+      "drawingBuffer": [
+        1920,
+        1080
+      ],
+      "quality": "high",
+      "world": {
+        "tier": 4,
+        "seed": 8128,
+        "landmarks": 3,
+        "backgroundMasses": 90,
+        "architecturalFamilies": [
+          "commercial",
+          "industrial",
+          "residential",
+          "abandoned"
+        ],
+        "streetEnvelope": {
+          "width": 114,
+          "length": 87.69999999999999
+        },
+        "streetSurfaceAreaM2": 4426,
+        "buildings": 37,
+        "generatedProps": 42,
+        "streetSegments": 10,
+        "identities": [
+          "commercial",
+          "industrial",
+          "residential",
+          "abandoned"
+        ],
+        "modules": 24
+      },
+      "city": {
+        "instances": 1677,
+        "chunks": 39,
+        "layers": {
+          "instances": 2650,
+          "batches": 28,
+          "skyline": 90
+        }
+      },
+      "route": "district",
+      "durationSeconds": 16,
+      "warmupSeconds": 3,
+      "initMs": 145.89999985694885,
+      "frameIntervalsMs": {
+        "samples": 781,
+        "mean": 16.66696577768167,
+        "median": 16.700000762939453,
+        "p95": 16.899999618530273,
+        "p99": 17,
+        "max": 17.100000381469727,
+        "spikesOver33ms": 0
+      },
+      "cpuUpdateMs": {
+        "samples": 781,
+        "mean": 0.04737516890414698,
+        "median": 0,
+        "p95": 0.10000014305114746,
+        "p99": 0.20000004768371582,
+        "max": 0.3000001907348633,
+        "spikesOver33ms": 0
+      },
+      "cpuRenderSubmissionMs": {
+        "samples": 781,
+        "mean": 1.612163881028355,
+        "median": 1.5999999046325684,
+        "p95": 2.200000047683716,
+        "p99": 2.799999952316284,
+        "max": 5.5,
+        "spikesOver33ms": 0
+      },
+      "gpuElapsedMs": {
+        "samples": 781,
+        "mean": 4.910482069142125,
+        "median": 4.690944,
+        "p95": 6.607904,
+        "p99": 7.307264,
+        "max": 8.651776,
+        "spikesOver33ms": 0
+      },
+      "gpuTimerSupported": true,
+      "drawCalls": {
+        "samples": 781,
+        "mean": 135.22151088348272,
+        "median": 137,
+        "p95": 215,
+        "p99": 234,
+        "max": 236
+      },
+      "triangles": {
+        "samples": 781,
+        "mean": 67236.16645326505,
+        "median": 67576,
+        "p95": 84066,
+        "p99": 86938,
+        "max": 86974
+      },
+      "resources": {
+        "geometries": 53,
+        "textures": 33,
+        "sceneGeometryObjects": 55,
+        "sceneTextures": 22,
+        "geometryAndInstanceArrayBytes": 639076,
+        "textureRGBA8EstimateBytes": 10136234.666666666,
+        "note": "CPU attribute storage and RGBA8 texture approximation; excludes render targets, driver allocation, program memory. Not total VRAM."
+      },
+      "heap": {
+        "used": 19035009,
+        "total": 29967293
+      },
+      "notes": [
+        "Frame intervals may be synchronized to display cadence and do not demonstrate spare GPU capacity.",
+        "CPU update excludes render submission; GPU query results are asynchronous and discarded during disjoint events."
+      ]
+    }
+  ]
+}

@@ -1,3 +1,4 @@
+import { sidewalkIntervals, streetHeight } from "./street-surfaces.js";
 import { random } from "./random.js";
 import { boundsOf, intersects } from "./district.js";
 import {
@@ -58,6 +59,20 @@ export function localToWorld(root, p) {
 export function terrainHeightAt(world, x, z) {
   const half = world.config.streetWidth / 2,
     heights = [];
+  const site = world.site?.bounds;
+  if (
+    site &&
+    (x < site.minX || x > site.maxX || z < site.minZ || z > site.maxZ)
+  )
+    return null;
+  if (
+    site &&
+    x >= site.minX &&
+    x <= site.maxX &&
+    z >= site.minZ &&
+    z <= site.maxZ
+  )
+    heights.push(streetHeight);
   if (Math.abs(x) <= half + 9 && z >= -75 && z <= 25) heights.push(-0.02);
   if (Math.abs(x) <= half - 1.4 && z >= -72 && z <= 22) heights.push(0.012);
   if (
@@ -66,10 +81,13 @@ export function terrainHeightAt(world, x, z) {
     z >= -70.5 &&
     z <= 20.5
   )
-    heights.push(0.1);
+    if (
+      sidewalkIntervals(world, Math.sign(x)).some(([a, b]) => z >= a && z <= b)
+    )
+      heights.push(0.1);
   for (const road of world.city.roads.slice(1))
     if (x >= road.minX && x <= road.maxX && z >= road.minZ && z <= road.maxZ)
-      heights.push(-0.01);
+      heights.push(streetHeight);
   return heights.length ? Math.max(...heights) : null;
 }
 const box = (id, position, size, material = "metal") => ({
@@ -188,6 +206,7 @@ export function placementObstacles(world) {
       maxY: s.height,
       hostId: s.id,
     }));
+  out.push(...(world.layers?.solids || []));
   for (const p of [...world.props, ...world.city.props])
     out.push({
       minX: p.x - p.w / 2,
@@ -669,7 +688,9 @@ export function clearsAssemblyFixtures(world, box) {
 export function generateSurfaceDecorations(world) {
   if (!world.config.tier) return [];
   const rand = random(world.config.seed + 819),
-    patches = [];
+    patches = [],
+    occupiedPatches = [],
+    ventBounds = world.attachments.vents.map((v) => assemblyBounds(v));
   for (const seg of world.city.roads)
     for (let i = 0; i < (world.config.tier === 4 ? 32 : 10); i++) {
       const x = seg.minX + rand() * (seg.maxX - seg.minX),
@@ -690,13 +711,18 @@ export function generateSurfaceDecorations(world) {
           box("infill", [0, 0.0025, 0], [w, 0.001, d], "wear"),
         ],
       };
+      const bounds = assemblyBounds(patch);
       if (
+        !occupiedPatches.some((p) => intersects(bounds, p, 0.03)) &&
+        !(world.layers?.solids || []).some((p) =>
+          overlaps3(bounds, p, 0.005),
+        ) &&
         flatFooting(world, patch) &&
-        !world.attachments.vents.some((v) =>
-          overlaps3(assemblyBounds(patch), assemblyBounds(v), 0.02),
-        )
-      )
+        !ventBounds.some((v) => overlaps3(bounds, v, 0.02))
+      ) {
         patches.push(patch);
+        occupiedPatches.push(bounds);
+      }
     }
   return patches;
 }

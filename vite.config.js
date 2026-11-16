@@ -15,7 +15,7 @@ export default defineConfig({
           .replace("<title>", "<title>EXPERIMENTAL PREVIEW — ")
           .replace(
             "<body>",
-            `<body><aside aria-label="Experimental development build" style="position:fixed;top:0;left:0;right:0;z-index:100;text-align:center;background:#e6bc65;color:#101820;font:700 11px/24px monospace;letter-spacing:1px">EXPERIMENTAL PREVIEW · MISSION 003 · ${revision.slice(0, 8)} · <a href="/NEON-DRIFT/" style="color:inherit">PLAY STABLE VERSION</a></aside>`,
+            `<body><aside aria-label="Experimental development build" style="position:fixed;top:0;left:0;right:0;z-index:100;text-align:center;background:#e6bc65;color:#101820;font:700 11px/24px monospace;letter-spacing:1px">EXPERIMENTAL PREVIEW · MISSION 004 · ${revision.slice(0, 8)} · <a href="/NEON-DRIFT/" style="color:inherit">PLAY STABLE VERSION</a></aside>`,
           );
       },
     },

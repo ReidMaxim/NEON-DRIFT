@@ -1,0 +1,129 @@
+{
+  "browser": "157.0.4341.60",
+  "cases": [
+    {
+      "seed": 2049,
+      "tier": 3,
+      "quality": "high",
+      "revision": "7fdcfbdb2c26fed56e3f6c7312882659eace3914",
+      "crossings": [
+        {
+          "name": "west-parcel",
+          "x": -43.5,
+          "z": -51,
+          "yaw": 1.5707963267948966,
+          "ms": 900,
+          "end": {
+            "x": -44.20050000000001,
+            "z": -51
+          }
+        },
+        {
+          "name": "residential-parcel",
+          "x": 31,
+          "z": -36,
+          "yaw": 1.5707963267948966,
+          "ms": 2200,
+          "end": {
+            "x": 27.299799999999994,
+            "z": -36
+          }
+        }
+      ],
+      "errors": []
+    },
+    {
+      "seed": 2049,
+      "tier": 4,
+      "quality": "high",
+      "revision": "7fdcfbdb2c26fed56e3f6c7312882659eace3914",
+      "crossings": [
+        {
+          "name": "west-parcel",
+          "x": -43.5,
+          "z": -51,
+          "yaw": 1.5707963267948966,
+          "ms": 900,
+          "end": {
+            "x": -44.19989999999999,
+            "z": -51
+          }
+        },
+        {
+          "name": "residential-parcel",
+          "x": 31,
+          "z": -36,
+          "yaw": 1.5707963267948966,
+          "ms": 2200,
+          "end": {
+            "x": 27.299500000000005,
+            "z": -36
+          }
+        }
+      ],
+      "errors": []
+    },
+    {
+      "seed": 8128,
+      "tier": 3,
+      "quality": "high",
+      "revision": "7fdcfbdb2c26fed56e3f6c7312882659eace3914",
+      "crossings": [
+        {
+          "name": "west-parcel",
+          "x": -43.5,
+          "z": -51,
+          "yaw": 1.5707963267948966,
+          "ms": 900,
+          "end": {
+            "x": -44.2002,
+            "z": -51
+          }
+        },
+        {
+          "name": "residential-parcel",
+          "x": 31,
+          "z": -36,
+          "yaw": 1.5707963267948966,
+          "ms": 2200,
+          "end": {
+            "x": 27.29889999999999,
+            "z": -36
+          }
+        }
+      ],
+      "errors": []
+    },
+    {
+      "seed": 8128,
+      "tier": 4,
+      "quality": "high",
+      "revision": "7fdcfbdb2c26fed56e3f6c7312882659eace3914",
+      "crossings": [
+        {
+          "name": "west-parcel",
+          "x": -43.5,
+          "z": -51,
+          "yaw": 1.5707963267948966,
+          "ms": 900,
+          "end": {
+            "x": -44.201400000000014,
+            "z": -51
+          }
+        },
+        {
+          "name": "residential-parcel",
+          "x": 31,
+          "z": -36,
+          "yaw": 1.5707963267948966,
+          "ms": 2200,
+          "end": {
+            "x": 27.298899999999993,
+            "z": -36
+          }
+        }
+      ],
+      "errors": []
+    }
+  ]
+}

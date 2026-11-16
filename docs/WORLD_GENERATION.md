@@ -25,3 +25,7 @@ The original terminal, tag, relay, cabinet, archive and recorder stay in their M
 Tests validate graph connectivity, geometry overlap rejection, physical movement to every street segment, return to the terminal area, and critical-object approaches. Street-surface area is a raster estimate of the road union; it is not the exact collision-free walkable area or an interior floor-area claim.
 
 World-size counts refer to descriptor building footprints; the original 15 distant skyline masses and authored hero tower/landmarks are additional composition geometry. Surface-area estimates count road union, while collision-free clearance-area estimates exclude expanded collider footprints. Neither is a claim of navigable interior floor area.
+
+## Mission 004 continuation
+
+The earlier sections document the Mission 003 reference. Mission 004 retains the core data fixture while adding visual continuity at all tiers, reserved landmark sites and two small access corridors at Tiers 3/4. It cuts sidewalk crossing intervals and places all road union tiles at Y=.012. See [continuity](WORLD_CONTINUITY.md) and [landmark generation](LANDMARK_SYSTEM.md).

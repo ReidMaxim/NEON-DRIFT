@@ -1,3 +1,4 @@
+import { sidewalkIntervals } from "./street-surfaces.js";
 import { grimeTexture } from "./living.js";
 import { scenarioLayout, inReservedArea } from "./scenario.js";
 import { intersects } from "./district.js";
@@ -65,9 +66,9 @@ export function buildScene(scene, world) {
     return m;
   };
   const half = world.config.streetWidth / 2;
-  box(0, -0.17, -25, world.config.streetWidth + 18, 0.3, 100, dark);
   for (const side of [-1, 1]) {
-    box(side * (half - 0.65), 0.04, -25, 1.3, 0.12, 91, metal);
+    for (const [a, b] of sidewalkIntervals(world, side))
+      box(side * (half - 0.65), 0.04, (a + b) / 2, 1.3, 0.12, b - a, metal);
     for (let i = 0; i < 17; i++)
       if ((i + (side + 1)) % 5 !== 0)
         box(
@@ -186,14 +187,6 @@ export function buildScene(scene, world) {
       );
     }
   }
-  // Distant skyline is deliberately offset, forming a recognizable layered crown.
-  for (let i = 0; i < 15; i++) {
-    const r = random(800 + i),
-      x = (i - 7) * 5,
-      h = 25 + r() * 40;
-    box(x, h / 2, -85 - r() * 15, 3 + r() * 4, h, 5, mats[i % 3]);
-    for (let y = 6; y < h; y += 4) box(x, y, -81, 1.6, 0.12, 0.1, neon[i % 2]);
-  }
   box(2, 23, -67, 9, 46, 8, mats[0]);
   box(2, 48, -67, 5, 4, 5, mats[1]);
   box(2, 54, -67, 0.15, 10, 0.15, neon[1]);
@@ -297,11 +290,21 @@ export function buildScene(scene, world) {
     fragmentShader: `varying vec3 wp; uniform float time; uniform float fogDensity; float hash(vec2 p){return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453);} void main(){vec2 p=wp.xz;float n=hash(floor(p*vec2(32.,65.)));float puddle=smoothstep(.15,.6,sin(p.x*1.7+sin(p.y*.3))*sin(p.y*.7));n=mix(n,.25,puddle*.85);float ripple=sin(p.y*18.+sin(p.x*4.)+time*2.)*.5+.5;vec3 c=vec3(.018,.028,.045);float a=exp(-pow((p.x+3.4)*.8,2.))*exp(-abs(p.y+4.)*.10);float b=exp(-pow((p.x-3.8)*.9,2.))*exp(-abs(p.y+16.)*.08);float d=exp(-pow((p.x+3.8)*1.1,2.))*exp(-abs(p.y-2.)*.18);c+=(vec3(.95,.035,.47)*a+vec3(.02,.46,.7)*b+vec3(.04,.7,.49)*d)*(.08+n*.55)*(.8+ripple*.2);float f=1.-exp(-pow(length(cameraPosition-wp)*fogDensity,2.));gl_FragColor=vec4(mix(c,vec3(.025,.038,.075),f),1.);}`,
   });
   const road = new T.Mesh(
-    new T.PlaneGeometry(world.config.streetWidth - 2.8, 94),
+    new T.PlaneGeometry(
+      world.config.streetWidth - 2.8,
+      Math.min(22, world.site.bounds.maxZ) -
+        Math.max(-72, world.site.bounds.minZ),
+    ),
     roadMat,
   );
   road.rotation.x = -Math.PI / 2;
-  road.position.set(0, 0.012, -25);
+  road.position.set(
+    0,
+    0.012,
+    (Math.min(22, world.site.bounds.maxZ) +
+      Math.max(-72, world.site.bounds.minZ)) /
+      2,
+  );
   scene.add(road);
 
   const markings = new T.InstancedMesh(geo, metal, 14),

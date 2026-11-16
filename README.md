@@ -92,3 +92,7 @@ See [preview setup, branch selection, safeguards, limitations and verified evide
 Mission 003 attachment correction: [root cause, validation and close-up evidence](docs/ATTACHMENT_CORRECTION.md).
 
 [Flush, traversable ground fixtures](docs/SURFACE_FIXTURES.md): Mission 003 surface integration follow-up.
+
+Mission 004: [City of Layers report](docs/MISSION_004_REPORT.md), [architectural grammar](docs/ARCHITECTURAL_GRAMMAR.md), [world continuity](docs/WORLD_CONTINUITY.md), and [landmark system](docs/LANDMARK_SYSTEM.md).
+
+[Mission 004 integration correction](docs/MISSION_004_INTEGRATION.md): unified playable pavement, attached enclosures and spatial coherence checks.

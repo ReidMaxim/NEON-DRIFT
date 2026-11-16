@@ -100,6 +100,17 @@ jobs:
           git add -A
           git diff --cached --quiet || git commit -m "Record successful Pages publication $GITHUB_RUN_ID"
           git push origin HEAD:pages-state
+      - name: Verify deployed bytes and preview revision
+        if: steps.select.outputs.publish == 'true'
+        env:
+          EXPECTED_PREVIEW_SHA: ${{ github.event.workflow_run.head_sha }}
+        run: node source/scripts/verify-pages-publication.mjs
+      - uses: actions/upload-artifact@v4
+        if: always() && steps.select.outputs.publish == 'true'
+        with:
+          name: neon-drift-publication-verification
+          path: publication-verification.json
+          if-no-files-found: ignore
       - name: Play links
         if: steps.select.outputs.publish == 'true'
         run: |
