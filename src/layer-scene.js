@@ -27,7 +27,7 @@ export function buildLayers(scene, world) {
   const glow = new T.MeshBasicMaterial({
     color: "#ffffff",
   });
-  const distant = new T.MeshBasicMaterial({
+  const distant = new T.MeshLambertMaterial({
     color: "#ffffff",
   });
   distant.onBeforeCompile = (shader) => {
@@ -86,13 +86,13 @@ export function buildLayers(scene, world) {
     floor = new T.Mesh(
       new T.PlaneGeometry(e.maxX - e.minX + 220, 300),
       new T.MeshStandardMaterial({
-        color: "#14202a",
+        color: "#23313b",
         roughness: 0.95,
         metalness: 0.15,
       }),
     );
   floor.rotation.x = -Math.PI / 2;
-  floor.position.set((e.minX + e.maxX) / 2, -0.17, -25);
+  floor.position.set((e.minX + e.maxX) / 2, -0.025, -25);
   scene.add(floor);
   if (model.labels.length) {
     const canvas = document.createElement("canvas");

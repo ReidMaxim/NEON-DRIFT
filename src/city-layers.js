@@ -368,7 +368,7 @@ export function generateCityLayers(world) {
         [x, height / 2 - 0.01, z],
         [diameter, height, diameter],
         "industrial",
-        0,
+        i === 0 ? 1 : 0,
         { kind: "cylinder", collision: "solid", support: "ground" },
       );
       put(
@@ -405,6 +405,24 @@ export function generateCityLayers(world) {
           { support: "ground" },
         );
     }
+    for (const y of [3.5, 7.5])
+      put(
+        `cooling-shell-band-${y}`,
+        [-24, y, -43],
+        [6.12, 0.16, 6.12],
+        "industrial",
+        1,
+        { kind: "torus", support: "cooling-tank-0" },
+      );
+    for (const x of [-25.5, -22.5])
+      put(
+        `cooling-rib-${x}`,
+        [x, 7.3, -40.35],
+        [0.2, 4.4, 0.24],
+        "industrial",
+        1,
+        { support: "cooling-tank-0" },
+      );
     for (const z of [-39, -47])
       put(
         `yard-column-${z}`,
@@ -446,6 +464,31 @@ export function generateCityLayers(world) {
       family: "industrial",
       support: "yard-sign-backing",
     });
+    put(
+      "cooling-west-panel",
+      [-27.015, 5.6, -43],
+      [0.16, 3.4, 2.2],
+      "industrial",
+      1,
+      { support: "cooling-tank-0" },
+    );
+    for (let i = 0; i < 5; i++)
+      put(
+        `cooling-west-slot-${i}`,
+        [-27.11, 4.4 + i * 0.5, -43],
+        [0.05, 0.12, 1.8],
+        "industrial",
+        2,
+        { support: "cooling-west-panel" },
+      );
+    put(
+      "cooling-west-marker",
+      [-27.13, 7.05, -43],
+      [0.05, 0.08, 1.8],
+      "industrial",
+      3,
+      { glow: true, support: "cooling-west-panel" },
+    );
     // Complete machinery bank bolted to a grounded service plinth.
     put(
       "cooling-service-bank",
@@ -829,6 +872,14 @@ export function generateCityLayers(world) {
         distant: true,
         support: "ground",
       });
+      put(
+        `${id}-upper`,
+        [x, h * 0.81 - 0.17, z],
+        [w * 0.72, h * 0.38, d * 0.72],
+        family,
+        0,
+        { background: true, distant: true, support: id },
+      );
       put(`${id}-crown`, [x, h + 0.83, z], [w * 0.65, 2, d * 0.65], family, 1, {
         background: true,
         distant: true,
@@ -840,16 +891,29 @@ export function generateCityLayers(world) {
           distant: true,
           support: `${id}-crown`,
         });
-      for (let y = 8; y < h - 2; y += 8)
-        if (r() > 0.55)
+      for (let y = 6; y < h - 2; y += 6)
+        if (r() > 0.25) {
+          const upper = y > h * 0.62,
+            ww = w * (upper ? 0.72 : 1),
+            dd = d * (upper ? 0.72 : 1),
+            xFace = Math.abs(x - cx) > Math.abs(z - cz);
+          const pos = xFace
+            ? [x - Math.sign(x - cx) * (ww / 2 + 0.02), y, z]
+            : [x, y, z - Math.sign(z - cz) * (dd / 2 + 0.02)];
           put(
             `${id}-windows-${y}`,
-            [x, y, z + d / 2 + 0.02],
-            [w * 0.55, 0.22, 0.04],
+            pos,
+            xFace ? [0.04, 0.22, dd * 0.62] : [ww * 0.62, 0.22, 0.04],
             family,
             3,
-            { background: true, distant: true, glow: true, support: id },
+            {
+              background: true,
+              distant: true,
+              glow: true,
+              support: upper ? `${id}-upper` : id,
+            },
           );
+        }
     }
   const transitZ = envelope.minZ - 19;
   put("transit-deck", [cx, 14, transitZ], [110, 0.9, 3.6], "industrial", 1, {
@@ -942,7 +1006,7 @@ export function validateCityLayers(world) {
         box.maxX > b.maxX + allow ||
         box.minZ < b.minZ - allow ||
         box.maxZ > b.maxZ + allow ||
-        box.minY < -0.001 ||
+        box.minY < (p.surface ? -0.04 : -0.001) ||
         box.maxY > a.host.h + 5
       )
         errors.push(`${p.id}: outside supported host envelope`);
